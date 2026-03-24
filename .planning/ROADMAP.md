@@ -65,7 +65,11 @@ Plans:
   3. Old age death triggers when context fills gradually, giving the citizen time to observe decline
   4. Accident death triggers at an unpredictable point with no warning, cutting output mid-thought
   5. Generation 1 citizens are protected from random (accident) death by default, and this protection is toggleable via config
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md -- ContextBudget class, death profile assignment, and citizen birth factory
+- [ ] 03-02-PLAN.md -- Death execution thresholds for old-age and accident profiles
 
 ### Phase 4: Roles
 **Goal**: Five distinct agent roles produce observably different output when given the same input
@@ -151,7 +155,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 |-------|----------------|--------|-----------|
 | 1. Project Scaffolding and Agent SDK | 0/1 | Planning complete | - |
 | 2. Type System, Config, and CLI | 0/2 | Planning complete | - |
-| 3. Mortality Engine | 0/0 | Not started | - |
+| 3. Mortality Engine | 0/2 | Planning complete | - |
 | 4. Roles | 0/0 | Not started | - |
 | 5. Turn-Based Interaction | 0/0 | Not started | - |
 | 6. Transmission System | 0/0 | Not started | - |
