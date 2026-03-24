@@ -12,11 +12,11 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Agent SDK setup with OAuth authentication for citizen agent calls — Validated in Phase 1: Project Scaffolding and Agent SDK
 
 ### Active
 
-- [ ] Agent SDK setup with OAuth authentication for citizen agent calls
+- [x] ~~Agent SDK setup with OAuth authentication for citizen agent calls~~ (→ Validated)
 - [ ] Mortality engine with 5 death profiles (old age, accident, cancer, young death, elder death) assigned hidden at birth
 - [ ] Turn-based citizen interaction within a generation (each sees previous citizen's output)
 - [ ] Sequential citizen execution (one at a time)
@@ -90,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after initialization*
+*Last updated: 2026-03-24 after Phase 1 completion*
