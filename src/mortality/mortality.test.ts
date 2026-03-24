@@ -1,7 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { ContextBudget } from './context-budget.js';
 import type { ContextBudgetConfig, ContextThreshold } from './context-budget.js';
 import { assignDeathProfile, calculateAccidentPoint } from './death-profiles.js';
+import { birthCitizen } from './citizen-lifecycle.js';
+import { CitizenConfigSchema, SimulationParametersSchema } from '../schemas/index.js';
+import type { SimulationParameters } from '../schemas/index.js';
+import { lineageBus } from '../events/index.js';
 
 describe('ContextBudget', () => {
   it('calculates effectiveCapacity with safety buffer', () => {
@@ -210,5 +214,109 @@ describe('calculateAccidentPoint', () => {
     }
     // With 100 random calls in [0.3, 0.7], we expect many distinct values
     expect(values.size).toBeGreaterThan(1);
+  });
+});
+
+describe('birthCitizen', () => {
+  const defaultParams: SimulationParameters = SimulationParametersSchema.parse({
+    seedProblem: 'What is worth preserving?',
+  });
+
+  it('returns object matching CitizenConfigSchema', () => {
+    const citizen = birthCitizen('builder', 1, defaultParams);
+    // Should not throw -- validates against the full schema
+    const parsed = CitizenConfigSchema.parse(citizen);
+    expect(parsed).toBeDefined();
+  });
+
+  it('has provided role and generationNumber', () => {
+    const citizen = birthCitizen('skeptic', 3, defaultParams);
+    expect(citizen.role).toBe('skeptic');
+    expect(citizen.generationNumber).toBe(3);
+  });
+
+  it('has id as a non-empty string (nanoid)', () => {
+    const citizen = birthCitizen('builder', 1, defaultParams);
+    expect(typeof citizen.id).toBe('string');
+    expect(citizen.id.length).toBeGreaterThan(0);
+  });
+
+  it('has name matching pattern citizen-gen{N}-{suffix}', () => {
+    const citizen = birthCitizen('archivist', 2, defaultParams);
+    expect(citizen.name).toMatch(/^citizen-gen2-.+$/);
+  });
+
+  it('has type equal to lineage-citizen', () => {
+    const citizen = birthCitizen('builder', 1, defaultParams);
+    expect(citizen.type).toBe('lineage-citizen');
+  });
+
+  it('has birthTimestamp as ISO datetime string', () => {
+    const citizen = birthCitizen('builder', 1, defaultParams);
+    expect(citizen.birthTimestamp).toBeDefined();
+    // ISO datetime should parse without error
+    const date = new Date(citizen.birthTimestamp);
+    expect(date.getTime()).not.toBeNaN();
+  });
+
+  it('has systemPrompt as empty string (placeholder for Phase 4)', () => {
+    const citizen = birthCitizen('builder', 1, defaultParams);
+    expect(citizen.systemPrompt).toBe('');
+  });
+
+  it('has contextBudget initialized to 0', () => {
+    const citizen = birthCitizen('builder', 1, defaultParams);
+    expect(citizen.contextBudget).toBe(0);
+  });
+
+  it('has deathProfile that is old-age or accident', () => {
+    const citizen = birthCitizen('builder', 2, defaultParams);
+    expect(['old-age', 'accident']).toContain(citizen.deathProfile);
+  });
+
+  it('always assigns old-age for gen1 when gen1Protection is true', () => {
+    const protectedParams = SimulationParametersSchema.parse({
+      seedProblem: 'test',
+      gen1Protection: true,
+      deathProfileDistribution: { 'old-age': 0.0, 'accident': 1.0 },
+    });
+    for (let i = 0; i < 20; i++) {
+      const citizen = birthCitizen('builder', 1, protectedParams);
+      expect(citizen.deathProfile).toBe('old-age');
+    }
+  });
+
+  it('emits citizen:born event with citizenId, role, generationNumber', () => {
+    const handler = vi.fn();
+    lineageBus.on('citizen:born', handler);
+    try {
+      const citizen = birthCitizen('observer', 4, defaultParams);
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith(citizen.id, 'observer', 4);
+    } finally {
+      lineageBus.removeListener('citizen:born', handler);
+    }
+  });
+});
+
+describe('mortality barrel exports', () => {
+  it('re-exports ContextBudget from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.ContextBudget).toBe(ContextBudget);
+  });
+
+  it('re-exports assignDeathProfile from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.assignDeathProfile).toBe(assignDeathProfile);
+  });
+
+  it('re-exports calculateAccidentPoint from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.calculateAccidentPoint).toBe(calculateAccidentPoint);
+  });
+
+  it('re-exports birthCitizen from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.birthCitizen).toBe(birthCitizen);
   });
 });
