@@ -9,9 +9,9 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 ### Project Foundation
 
-- [ ] **FOUND-01**: Project scaffolded as TypeScript package with proper tsconfig extending Genesis patterns
-- [ ] **FOUND-02**: Claude Agent SDK installed and configured with working authentication
-- [ ] **FOUND-03**: Single agent can be spawned via Agent SDK query() and produce output
+- [x] **FOUND-01**: Project scaffolded as TypeScript package with proper tsconfig extending Genesis patterns
+- [x] **FOUND-02**: Claude Agent SDK installed and configured with working authentication
+- [x] **FOUND-03**: Single agent can be spawned via Agent SDK query() and produce output
 - [ ] **FOUND-04**: Zod schemas defined for CitizenConfig, SimulationParameters, and all core types extending @genesis/shared
 - [ ] **FOUND-05**: Typed LineageEvents defined and emitting on EventEmitter3 event bus
 - [ ] **FOUND-06**: State persistence via JSON files with atomic writes (following Genesis StateManager pattern)
@@ -147,9 +147,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
+| FOUND-02 | Phase 1 | Complete |
+| FOUND-03 | Phase 1 | Complete |
 | FOUND-04 | Phase 2 | Pending |
 | FOUND-05 | Phase 2 | Pending |
 | FOUND-06 | Phase 2 | Pending |
