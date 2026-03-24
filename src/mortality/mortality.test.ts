@@ -2,7 +2,15 @@ import { describe, it, expect, vi } from 'vitest';
 import { ContextBudget } from './context-budget.js';
 import type { ContextBudgetConfig, ContextThreshold } from './context-budget.js';
 import { assignDeathProfile, calculateAccidentPoint } from './death-profiles.js';
+import * as deathProfiles from './death-profiles.js';
 import { birthCitizen } from './citizen-lifecycle.js';
+import {
+  createDeathThresholds,
+  getDeclineSignal,
+  PEAK_TRANSMISSION_LABEL,
+  ACCIDENT_DEATH_LABEL,
+  OldAgeThresholdLabels,
+} from './death-execution.js';
 import { CitizenConfigSchema, SimulationParametersSchema } from '../schemas/index.js';
 import type { SimulationParameters } from '../schemas/index.js';
 import { lineageBus } from '../events/index.js';
@@ -296,6 +304,149 @@ describe('birthCitizen', () => {
     } finally {
       lineageBus.removeListener('citizen:born', handler);
     }
+  });
+});
+
+describe('createDeathThresholds', () => {
+  describe('old-age profile', () => {
+    it('returns array of ContextThreshold[] with at least 4 thresholds', () => {
+      const thresholds = createDeathThresholds('old-age', { peakTransmissionMin: 0.4 });
+      expect(thresholds.length).toBeGreaterThanOrEqual(4);
+    });
+
+    it('contains threshold with label peak-transmission at peakTransmissionWindow.min (default 0.4)', () => {
+      const thresholds = createDeathThresholds('old-age', { peakTransmissionMin: 0.4 });
+      const peak = thresholds.find(t => t.label === 'peak-transmission');
+      expect(peak).toBeDefined();
+      expect(peak!.percentage).toBe(0.4);
+    });
+
+    it('contains threshold with label decline-warning at percentage 0.75', () => {
+      const thresholds = createDeathThresholds('old-age', { peakTransmissionMin: 0.4 });
+      const decline = thresholds.find(t => t.label === 'decline-warning');
+      expect(decline).toBeDefined();
+      expect(decline!.percentage).toBe(0.75);
+    });
+
+    it('contains threshold with label final-window at percentage 0.85', () => {
+      const thresholds = createDeathThresholds('old-age', { peakTransmissionMin: 0.4 });
+      const finalWindow = thresholds.find(t => t.label === 'final-window');
+      expect(finalWindow).toBeDefined();
+      expect(finalWindow!.percentage).toBe(0.85);
+    });
+
+    it('contains threshold with label old-age-death at percentage 0.95', () => {
+      const thresholds = createDeathThresholds('old-age', { peakTransmissionMin: 0.4 });
+      const death = thresholds.find(t => t.label === 'old-age-death');
+      expect(death).toBeDefined();
+      expect(death!.percentage).toBe(0.95);
+    });
+
+    it('thresholds are sorted ascending by percentage', () => {
+      const thresholds = createDeathThresholds('old-age', { peakTransmissionMin: 0.4 });
+      for (let i = 1; i < thresholds.length; i++) {
+        expect(thresholds[i]!.percentage).toBeGreaterThanOrEqual(thresholds[i - 1]!.percentage);
+      }
+    });
+
+    it('custom peakTransmissionWindow.min (e.g., 0.35) changes peak-transmission threshold', () => {
+      const thresholds = createDeathThresholds('old-age', { peakTransmissionMin: 0.35 });
+      const peak = thresholds.find(t => t.label === 'peak-transmission');
+      expect(peak).toBeDefined();
+      expect(peak!.percentage).toBe(0.35);
+    });
+  });
+
+  describe('accident profile', () => {
+    it('returns array of ContextThreshold[] with at least 2 thresholds', () => {
+      // With default peakTransmissionMin=0.4, most accident points (0.3-0.7) will be > 0.4
+      // so we should get peak-transmission + accident-death = 2
+      // But if accident point < 0.4, we get only accident-death = 1
+      // Use a low peakTransmissionMin to ensure we always get at least 2
+      const thresholds = createDeathThresholds('accident', { peakTransmissionMin: 0.2 });
+      expect(thresholds.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('contains threshold with label peak-transmission at peakTransmissionMin', () => {
+      // Use low peakTransmissionMin so accident point is always > it
+      const thresholds = createDeathThresholds('accident', { peakTransmissionMin: 0.2 });
+      const peak = thresholds.find(t => t.label === 'peak-transmission');
+      expect(peak).toBeDefined();
+      expect(peak!.percentage).toBe(0.2);
+    });
+
+    it('contains threshold with label accident-death at percentage between 0.3 and 0.7', () => {
+      for (let i = 0; i < 20; i++) {
+        const thresholds = createDeathThresholds('accident', { peakTransmissionMin: 0.4 });
+        const accident = thresholds.find(t => t.label === 'accident-death');
+        expect(accident).toBeDefined();
+        expect(accident!.percentage).toBeGreaterThanOrEqual(0.3);
+        expect(accident!.percentage).toBeLessThanOrEqual(0.7);
+      }
+    });
+
+    it('does NOT contain decline-warning or final-window or old-age-death labels', () => {
+      for (let i = 0; i < 20; i++) {
+        const thresholds = createDeathThresholds('accident', { peakTransmissionMin: 0.4 });
+        const labels = thresholds.map(t => t.label);
+        expect(labels).not.toContain('decline-warning');
+        expect(labels).not.toContain('final-window');
+        expect(labels).not.toContain('old-age-death');
+      }
+    });
+
+    it('when accident point < peakTransmissionMin, peak-transmission threshold is excluded', () => {
+      // Mock calculateAccidentPoint to return 0.3 (below peakTransmissionMin of 0.4)
+      vi.spyOn(deathProfiles, 'calculateAccidentPoint').mockReturnValue(0.3);
+      try {
+        const thresholds = createDeathThresholds('accident', { peakTransmissionMin: 0.4 });
+        const labels = thresholds.map(t => t.label);
+        expect(labels).not.toContain('peak-transmission');
+        expect(labels).toContain('accident-death');
+        expect(thresholds).toHaveLength(1);
+      } finally {
+        vi.restoreAllMocks();
+      }
+    });
+  });
+});
+
+describe('getDeclineSignal', () => {
+  it('for label decline-warning, returns string containing context and percentage info', () => {
+    const signal = getDeclineSignal('decline-warning', 0.75);
+    expect(signal).toContain('75%');
+    expect(signal.toLowerCase()).toContain('context');
+  });
+
+  it('for label final-window, returns string containing final or last', () => {
+    const signal = getDeclineSignal('final-window', 0.85);
+    expect(signal.toLowerCase()).toMatch(/final|last/);
+  });
+
+  it('for label old-age-death, returns string containing end or death or final moments', () => {
+    const signal = getDeclineSignal('old-age-death', 0.95);
+    expect(signal.toLowerCase()).toMatch(/end|death|final moments/);
+  });
+
+  it('for unknown label, returns empty string', () => {
+    const signal = getDeclineSignal('unknown-label', 0.5);
+    expect(signal).toBe('');
+  });
+});
+
+describe('death-execution constants', () => {
+  it('OldAgeThresholdLabels is a readonly array containing decline-warning, final-window, old-age-death', () => {
+    expect(OldAgeThresholdLabels).toContain('decline-warning');
+    expect(OldAgeThresholdLabels).toContain('final-window');
+    expect(OldAgeThresholdLabels).toContain('old-age-death');
+  });
+
+  it('ACCIDENT_DEATH_LABEL equals accident-death', () => {
+    expect(ACCIDENT_DEATH_LABEL).toBe('accident-death');
+  });
+
+  it('PEAK_TRANSMISSION_LABEL equals peak-transmission', () => {
+    expect(PEAK_TRANSMISSION_LABEL).toBe('peak-transmission');
   });
 });
 
