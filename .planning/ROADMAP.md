@@ -47,9 +47,13 @@ Plans:
   1. Zod schemas for CitizenConfig, SimulationParameters, and all core types validate correct input and reject malformed input
   2. LineageEvents type definitions exist and emit on an EventEmitter3 bus without errors
   3. State can be persisted to a JSON file and loaded back with identical data
-  4. Running `tsx src/index.ts "What is consciousness?"` parses the seed problem from CLI and loads validated config
+  4. Running `tsx src/cli.ts "What is consciousness?"` parses the seed problem from CLI and loads validated config
   5. All simulation parameters (generationSize, deathProfileDistribution, mutationRate, roleDistribution, etc.) are readable from config
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md -- Zod schemas for all core types and typed LineageEvents event bus
+- [ ] 02-02-PLAN.md -- State persistence, config loading, Commander CLI entry point
 
 ### Phase 3: Mortality Engine
 **Goal**: Citizens are born with hidden death profiles and age through context consumption, with old age and accident deaths executing correctly
@@ -146,7 +150,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Project Scaffolding and Agent SDK | 0/1 | Planning complete | - |
-| 2. Type System, Config, and CLI | 0/0 | Not started | - |
+| 2. Type System, Config, and CLI | 0/2 | Planning complete | - |
 | 3. Mortality Engine | 0/0 | Not started | - |
 | 4. Roles | 0/0 | Not started | - |
 | 5. Turn-Based Interaction | 0/0 | Not started | - |
