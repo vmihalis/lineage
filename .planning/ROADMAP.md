@@ -34,7 +34,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A single agent call via Agent SDK `query()` returns a coherent response with a system prompt
   3. OAuth authentication succeeds without manual token management
   4. The project imports from `@genesis/shared` without resolution errors
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 01-01-PLAN.md -- Scaffold TypeScript package, Agent SDK proof-of-concept, and tests
 
 ### Phase 2: Type System, Config, and CLI
 **Goal**: All core types are defined with Zod validation, simulation parameters are configurable, and the CLI accepts a seed problem
@@ -142,7 +145,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project Scaffolding and Agent SDK | 0/0 | Not started | - |
+| 1. Project Scaffolding and Agent SDK | 0/1 | Planning complete | - |
 | 2. Type System, Config, and CLI | 0/0 | Not started | - |
 | 3. Mortality Engine | 0/0 | Not started | - |
 | 4. Roles | 0/0 | Not started | - |
