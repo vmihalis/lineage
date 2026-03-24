@@ -52,7 +52,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Zod schemas for all core types and typed LineageEvents event bus
+- [x] 02-01-PLAN.md -- Zod schemas for all core types and typed LineageEvents event bus
 - [ ] 02-02-PLAN.md -- State persistence, config loading, Commander CLI entry point
 
 ### Phase 3: Mortality Engine

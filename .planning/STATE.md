@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-24T22:36:50.259Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-03-24T23:20:35.092Z"
 progress:
   total_phases: 10
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 3
+  completed_plans: 2
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mortality changes what a mind produces -- urgency, loss, and the knowledge of ending create different thinking than comfort and infinite time.
-**Current focus:** Phase 01 — project-scaffolding-and-agent-sdk
+**Current focus:** Phase 02 — type-system-config-and-cli
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 02 (type-system-config-and-cli) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -47,6 +47,8 @@ Plan: Not started
 
 *Updated after each plan completion*
 | Phase 01 P01 | 4min | 3 tasks | 8 files |
+| Phase 02 P01 | 7min | 2 tasks | 12 files |
+| Phase 02 P02 | 6min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -62,6 +64,12 @@ Recent decisions affecting current work:
 - [Phase 01]: Agent SDK with permissionMode: dontAsk for headless citizen execution
 - [Phase 01]: @genesis/shared via file: protocol for standalone operation
 - [Phase 01]: No build step -- tsx for dev, direct TS imports (Genesis pattern)
+- [Phase 02]: Zod 4 .default({}) requires full default objects (not empty {}) for nested schemas with inner defaults
+- [Phase 02]: lineageBus is standalone EventEmitter (not Genesis bus) for standalone operation
+- [Phase 02]: Distribution schemas use Math.abs(sum - 1.0) < 0.01 tolerance for floating point
+- [Phase 02]: createProgram() factory pattern for testable Commander CLI instances
+- [Phase 02]: CLI action re-throws errors instead of process.exit for testability
+- [Phase 02]: DEFAULT_SIMULATION_PARAMETERS omits seedProblem (always required from CLI)
 
 ### Pending Todos
 
@@ -75,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:31:38.369Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-24T23:20:35.089Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

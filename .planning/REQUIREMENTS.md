@@ -12,9 +12,9 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 - [x] **FOUND-01**: Project scaffolded as TypeScript package with proper tsconfig extending Genesis patterns
 - [x] **FOUND-02**: Claude Agent SDK installed and configured with working authentication
 - [x] **FOUND-03**: Single agent can be spawned via Agent SDK query() and produce output
-- [ ] **FOUND-04**: Zod schemas defined for CitizenConfig, SimulationParameters, and all core types extending @genesis/shared
-- [ ] **FOUND-05**: Typed LineageEvents defined and emitting on EventEmitter3 event bus
-- [ ] **FOUND-06**: State persistence via JSON files with atomic writes (following Genesis StateManager pattern)
+- [x] **FOUND-04**: Zod schemas defined for CitizenConfig, SimulationParameters, and all core types extending @genesis/shared
+- [x] **FOUND-05**: Typed LineageEvents defined and emitting on EventEmitter3 event bus
+- [x] **FOUND-06**: State persistence via JSON files with atomic writes (following Genesis StateManager pattern)
 
 ### Agent Lifecycle
 
@@ -70,10 +70,10 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 ### Simulation Config
 
-- [ ] **CONF-01**: All simulation parameters as mutable JSON config validated with Zod
-- [ ] **CONF-02**: Parameters include: generationSize, deathProfileDistribution, mutationRate, largeMutationProbability, roleDistribution, gen1Protection, peakTransmissionWindow, inheritanceStagingRates, maxGenerations
-- [ ] **CONF-03**: Seed problem passed as CLI argument at launch
-- [ ] **CONF-04**: CLI entry point using Commander for argument parsing
+- [x] **CONF-01**: All simulation parameters as mutable JSON config validated with Zod
+- [x] **CONF-02**: Parameters include: generationSize, deathProfileDistribution, mutationRate, largeMutationProbability, roleDistribution, gen1Protection, peakTransmissionWindow, inheritanceStagingRates, maxGenerations
+- [x] **CONF-03**: Seed problem passed as CLI argument at launch
+- [x] **CONF-04**: CLI entry point using Commander for argument parsing
 
 ### Events & Output
 
@@ -150,9 +150,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUND-01 | Phase 1 | Complete |
 | FOUND-02 | Phase 1 | Complete |
 | FOUND-03 | Phase 1 | Complete |
-| FOUND-04 | Phase 2 | Pending |
-| FOUND-05 | Phase 2 | Pending |
-| FOUND-06 | Phase 2 | Pending |
+| FOUND-04 | Phase 2 | Complete |
+| FOUND-05 | Phase 2 | Complete |
+| FOUND-06 | Phase 2 | Complete |
 | LIFE-01 | Phase 3 | Pending |
 | LIFE-02 | Phase 3 | Pending |
 | LIFE-03 | Phase 3 | Pending |
@@ -184,10 +184,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GENM-03 | Phase 9 | Pending |
 | GENM-04 | Phase 9 | Pending |
 | GENM-05 | Phase 9 | Pending |
-| CONF-01 | Phase 2 | Pending |
-| CONF-02 | Phase 2 | Pending |
-| CONF-03 | Phase 2 | Pending |
-| CONF-04 | Phase 2 | Pending |
+| CONF-01 | Phase 2 | Complete |
+| CONF-02 | Phase 2 | Complete |
+| CONF-03 | Phase 2 | Complete |
+| CONF-04 | Phase 2 | Complete |
 | EVNT-01 | Phase 10 | Pending |
 | EVNT-02 | Phase 10 | Pending |
 | EVNT-03 | Phase 10 | Pending |
