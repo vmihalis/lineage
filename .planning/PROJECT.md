@@ -13,6 +13,12 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 ### Validated
 
 - [x] Agent SDK setup with OAuth authentication for citizen agent calls — Validated in Phase 1: Project Scaffolding and Agent SDK
+- [x] Zod schemas extending @genesis/shared types (CitizenConfig, SimulationParameters, etc.) — Validated in Phase 2: Type System, Config, and CLI
+- [x] Typed events composing with Genesis event bus (LineageEvents) — Validated in Phase 2: Type System, Config, and CLI
+- [x] State persistence via Genesis StateManager with atomic writes — Validated in Phase 2: Type System, Config, and CLI
+- [x] Simulation parameters as mutable config (generation size, death distributions, mutation rates, role distributions, etc.) — Validated in Phase 2: Type System, Config, and CLI
+- [x] Seed problem passed as CLI argument at launch — Validated in Phase 2: Type System, Config, and CLI
+- [x] Configurable number of generations (default 3) — Validated in Phase 2: Type System, Config, and CLI
 
 ### Active
 
@@ -25,16 +31,10 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [ ] Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)
 - [ ] Generation manager orchestrating cohort lifecycle: birth → roles → interaction → death → next
 - [ ] 5 agent roles (Builder, Skeptic, Archivist, Elder Interpreter, Observer) as config-driven system prompts
-- [ ] Simulation parameters as mutable config (generation size, death distributions, mutation rates, role distributions, etc.)
 - [ ] Generation 1 protection from random death by default
-- [ ] Configurable number of generations (default 3)
-- [ ] Seed problem passed as CLI argument at launch
 - [ ] Civilization metrics computation (knowledge survival rate, seed problem progress, corruption level, generational diversity)
 - [ ] Real-time event stream output (births, deaths, transmissions, mutations)
 - [ ] Generation summary output at each generation boundary
-- [ ] Zod schemas extending @genesis/shared types (CitizenConfig, SimulationParameters, etc.)
-- [ ] Typed events composing with Genesis event bus (LineageEvents)
-- [ ] State persistence via Genesis StateManager with atomic writes
 
 ### Out of Scope
 
@@ -90,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 1 completion*
+*Last updated: 2026-03-24 after Phase 2 completion*
