@@ -15,3 +15,5 @@ export { TurnOutputSchema, formatHandoff, buildTurnPrompt, runTurns, executeCiti
 export type { TurnOutput, TurnRunnerConfig, TurnResult } from './interaction/index.js';
 export { extractAnchorTokens, buildPeakTransmissionPrompt, executePeakTransmission, writeTransmission } from './transmission/index.js';
 export type { TransmissionResult } from './transmission/index.js';
+export { mutateTransmission, decideMutation, selectTokenIndex, reassembleContent, buildSmallMutationPrompt, buildLargeMutationPrompt, MUTATION_SYSTEM_PROMPT, executeMutation } from './mutation/index.js';
+export type { MutationResult, MutationType, MutationDecision } from './mutation/index.js';
