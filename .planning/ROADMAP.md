@@ -107,7 +107,11 @@ Plans:
   1. When a citizen reaches 40-50% context usage, a peak transmission prompt fires and the citizen distills their best thinking
   2. Peak transmissions use a structured format with anchor tokens (numbered claims, not raw prose)
   3. Transmissions are persisted to disk as files with full metadata (citizenId, generation, role, type, timestamp)
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 06-01-PLAN.md -- Anchor token parser and peak transmission prompt builder (TDD pure functions)
+- [ ] 06-02-PLAN.md -- Transmission executor (Agent SDK call), writer (disk persistence + event), and barrel exports
 
 ### Phase 7: Mutation Pipeline
 **Goal**: Transmissions are corrupted in transit between generations through LLM-powered semantic transformations
@@ -165,7 +169,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 3. Mortality Engine | 0/2 | Planning complete | - |
 | 4. Roles | 0/1 | Planning complete | - |
 | 5. Turn-Based Interaction | 0/2 | Planning complete | - |
-| 6. Transmission System | 0/0 | Not started | - |
+| 6. Transmission System | 0/2 | Planning complete | - |
 | 7. Mutation Pipeline | 0/0 | Not started | - |
 | 8. Inheritance Composer | 0/0 | Not started | - |
 | 9. Generation Manager | 0/0 | Not started | - |
