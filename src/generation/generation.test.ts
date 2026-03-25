@@ -41,6 +41,13 @@ vi.mock('../inheritance/inheritance-composer.js', () => ({
   composeInheritance: (...args: unknown[]) => mockComposeInheritance(...args),
 }));
 
+const mockStateManagerWrite = vi.fn();
+vi.mock('../state/index.js', () => ({
+  LineageStateManager: class MockLineageStateManager {
+    write(...args: unknown[]) { return mockStateManagerWrite(...args); }
+  },
+}));
+
 import { runGeneration } from './generation-runner.js';
 import { runSimulation } from './simulation-runner.js';
 import { CitizenConfigSchema, SimulationParametersSchema } from '../schemas/index.js';
@@ -146,6 +153,7 @@ function setupDefaultMocks(params?: SimulationParameters) {
 describe('runGeneration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockStateManagerWrite.mockResolvedValue(undefined);
   });
 
   // GENM-02: State machine transitions
@@ -340,6 +348,23 @@ describe('runGeneration', () => {
       expect(callArgs.seedProblem).toBe('What is worth preserving?');
     });
   });
+
+  // State persistence
+  describe('state persistence', () => {
+    it('persists generation state to disk at COMPLETE phase', async () => {
+      const params = makeMockParams();
+      setupDefaultMocks(params);
+
+      await runGeneration(1, params, null, null);
+
+      expect(mockStateManagerWrite).toHaveBeenCalledOnce();
+      // Verify path contains 'generations/gen1.json'
+      const [filePath, data, _schema, configType] = mockStateManagerWrite.mock.calls[0];
+      expect(filePath).toContain('generations/gen1.json');
+      expect(data.phase).toBe('COMPLETE');
+      expect(configType).toBe('generation');
+    });
+  });
 });
 
 // --- runSimulation tests ---
@@ -347,6 +372,7 @@ describe('runGeneration', () => {
 describe('runSimulation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockStateManagerWrite.mockResolvedValue(undefined);
   });
 
   // GENM-04: Max generations

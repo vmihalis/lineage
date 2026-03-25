@@ -18,6 +18,7 @@
  */
 
 import { nanoid } from 'nanoid';
+import { join } from 'node:path';
 import type { Generation, SimulationParameters, CitizenConfig, Transmission } from '../schemas/index.js';
 import { GenerationSchema } from '../schemas/index.js';
 import { assignRoles } from '../roles/role-assignment.js';
@@ -27,6 +28,7 @@ import { buildPeakTransmissionPrompt } from '../transmission/peak-prompt.js';
 import { executePeakTransmission } from '../transmission/transmission-executor.js';
 import { writeTransmission } from '../transmission/transmission-writer.js';
 import { mutateTransmission } from '../mutation/mutation-pipeline.js';
+import { LineageStateManager } from '../state/index.js';
 import { lineageBus } from '../events/index.js';
 
 export async function runGeneration(
@@ -86,6 +88,12 @@ export async function runGeneration(
   // COMPLETE
   generation.phase = 'COMPLETE';
   generation.endedAt = new Date().toISOString();
+
+  // Persist generation state to disk
+  const stateManager = new LineageStateManager(params.outputDir);
+  const genFilePath = join(params.outputDir, 'generations', `gen${generationNumber}.json`);
+  await stateManager.write(genFilePath, generation, GenerationSchema, 'generation');
+
   lineageBus.emit('generation:ended', generationNumber);
 
   return generation;

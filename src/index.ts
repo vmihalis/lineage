@@ -19,3 +19,4 @@ export { mutateTransmission, decideMutation, selectTokenIndex, reassembleContent
 export type { MutationResult, MutationType, MutationDecision } from './mutation/index.js';
 export { readGenerationTransmissions, readAllPriorTransmissions, SEED_COMPRESSION_SYSTEM_PROMPT, buildSeedCompressionPrompt, formatSeedLayer, formatRecentLayer, executeSeedCompression, composeInheritance, INHERITANCE_RECENT_LABEL } from './inheritance/index.js';
 export type { InheritancePackage } from './inheritance/index.js';
+export { runGeneration, runSimulation } from './generation/index.js';
