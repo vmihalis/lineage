@@ -139,7 +139,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md -- Transmission reader, seed compression prompt builder, seed/recent layer formatters (TDD pure functions)
+- [x] 08-01-PLAN.md -- Transmission reader, seed compression prompt builder, seed/recent layer formatters (TDD pure functions)
 - [ ] 08-02-PLAN.md -- Seed compression executor (Agent SDK call), inheritance composer orchestrator, and barrel exports
 
 ### Phase 9: Generation Manager
