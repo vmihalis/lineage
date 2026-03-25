@@ -93,7 +93,11 @@ Plans:
   1. Citizens execute one at a time in defined turn order within a generation
   2. Each citizen's input includes the previous citizen's output, creating a visible chain of building on prior work
   3. The sequence of outputs reads as a coherent within-generation narrative (not isolated monologues)
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md -- TurnOutput schema, handoff formatting, and turn prompt builder with TDD tests
+- [ ] 05-02-PLAN.md -- TurnRunner sequential execution with Agent SDK, ContextBudget integration, and barrel exports
 
 ### Phase 6: Transmission System
 **Goal**: Citizens produce structured peak transmissions at the right moment in their lifespan, persisted to disk
@@ -160,7 +164,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 2. Type System, Config, and CLI | 0/2 | Planning complete | - |
 | 3. Mortality Engine | 0/2 | Planning complete | - |
 | 4. Roles | 0/1 | Planning complete | - |
-| 5. Turn-Based Interaction | 0/0 | Not started | - |
+| 5. Turn-Based Interaction | 0/2 | Planning complete | - |
 | 6. Transmission System | 0/0 | Not started | - |
 | 7. Mutation Pipeline | 0/0 | Not started | - |
 | 8. Inheritance Composer | 0/0 | Not started | - |
