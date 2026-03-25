@@ -8,6 +8,12 @@ vi.mock('node:fs/promises', () => ({
   readFile: (...args: unknown[]) => mockReadFile(...args),
 }));
 
+// Mock the Agent SDK before any imports that use it
+const mockQuery = vi.fn();
+vi.mock('@anthropic-ai/claude-agent-sdk', () => ({
+  query: (...args: unknown[]) => mockQuery(...args),
+}));
+
 import { readGenerationTransmissions, readAllPriorTransmissions } from './transmission-reader.js';
 import {
   SEED_COMPRESSION_SYSTEM_PROMPT,
@@ -15,8 +21,12 @@ import {
   formatSeedLayer,
 } from './seed-layer.js';
 import { formatRecentLayer } from './recent-layer.js';
+import { executeSeedCompression } from './seed-executor.js';
+import { composeInheritance, INHERITANCE_RECENT_LABEL } from './inheritance-composer.js';
+import type { InheritancePackage } from './inheritance-composer.js';
 import { TransmissionSchema } from '../schemas/index.js';
 import type { Transmission } from '../schemas/index.js';
+import { lineageBus } from '../events/index.js';
 
 function makeTransmission(overrides: Record<string, unknown> = {}): Transmission {
   return TransmissionSchema.parse({
@@ -301,5 +311,247 @@ describe('formatRecentLayer', () => {
     const result = formatRecentLayer(txs, 2);
 
     expect(result).toMatch(/Consider this inherited knowledge|Build on|question|preserve/);
+  });
+});
+
+// --- Mock query generator helpers (same pattern as mutation.test.ts) ---
+
+function createMockQueryGenerator(resultText: string, inputTokens = 100, outputTokens = 200) {
+  return (async function* () {
+    yield {
+      type: 'assistant' as const,
+      message: { content: [{ type: 'text', text: resultText }] },
+      parent_tool_use_id: null,
+      uuid: 'test-uuid',
+      session_id: 'test-session',
+    };
+    yield {
+      type: 'result' as const,
+      subtype: 'success' as const,
+      result: resultText,
+      is_error: false,
+      num_turns: 1,
+      duration_ms: 100,
+      duration_api_ms: 50,
+      total_cost_usd: 0.001,
+      usage: { input_tokens: inputTokens, output_tokens: outputTokens },
+      modelUsage: {},
+      permission_denials: [],
+      stop_reason: 'end_turn',
+      uuid: 'test-uuid',
+      session_id: 'test-session',
+    };
+  })();
+}
+
+function createErrorQueryGenerator(errorSubtype: string) {
+  return (async function* () {
+    yield {
+      type: 'result' as const,
+      subtype: errorSubtype as 'error',
+      result: '',
+      is_error: true,
+      num_turns: 0,
+      duration_ms: 50,
+      duration_api_ms: 25,
+      total_cost_usd: 0,
+      usage: { input_tokens: 10, output_tokens: 0 },
+      modelUsage: {},
+      permission_denials: [],
+      stop_reason: 'error',
+      uuid: 'test-uuid',
+      session_id: 'test-session',
+    };
+  })();
+}
+
+// --- executeSeedCompression tests ---
+
+describe('executeSeedCompression', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('calls query() with SEED_COMPRESSION_SYSTEM_PROMPT as systemPrompt', async () => {
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('[1] Knowledge endures\n[2] Loss teaches'));
+
+    await executeSeedCompression('Compress these tokens');
+
+    expect(mockQuery).toHaveBeenCalledTimes(1);
+    const callArgs = mockQuery.mock.calls[0][0];
+    expect(callArgs.options.systemPrompt).toBe(SEED_COMPRESSION_SYSTEM_PROMPT);
+  });
+
+  it('calls query() with maxTurns: 1, permissionMode: "dontAsk", persistSession: false', async () => {
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('[1] Knowledge endures'));
+
+    await executeSeedCompression('Compress these tokens');
+
+    const callArgs = mockQuery.mock.calls[0][0];
+    expect(callArgs.options.maxTurns).toBe(1);
+    expect(callArgs.options.permissionMode).toBe('dontAsk');
+    expect(callArgs.options.persistSession).toBe(false);
+  });
+
+  it('returns tokens parsed via extractAnchorTokens from LLM result', async () => {
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('[1] Knowledge endures\n[2] Loss teaches\n[3] Fire is hot'));
+
+    const result = await executeSeedCompression('Compress these tokens');
+
+    expect(result.tokens).toEqual(['Knowledge endures', 'Loss teaches', 'Fire is hot']);
+  });
+
+  it('returns usage with inputTokens and outputTokens from result message', async () => {
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('[1] Knowledge endures', 150, 75));
+
+    const result = await executeSeedCompression('Compress these tokens');
+
+    expect(result.usage).toEqual({ inputTokens: 150, outputTokens: 75 });
+  });
+
+  it('returns empty tokens array on LLM error subtype', async () => {
+    mockQuery.mockReturnValueOnce(createErrorQueryGenerator('max_turns_reached'));
+
+    const result = await executeSeedCompression('Compress these tokens');
+
+    expect(result.tokens).toEqual([]);
+  });
+
+  it('returns empty tokens array when result text is empty', async () => {
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator(''));
+
+    const result = await executeSeedCompression('Compress these tokens');
+
+    expect(result.tokens).toEqual([]);
+  });
+});
+
+// --- INHERITANCE_RECENT_LABEL tests ---
+
+describe('INHERITANCE_RECENT_LABEL', () => {
+  it('equals "inheritance-recent"', () => {
+    expect(INHERITANCE_RECENT_LABEL).toBe('inheritance-recent');
+  });
+});
+
+// --- composeInheritance tests ---
+
+describe('composeInheritance', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('for generation 1 returns InheritancePackage with seedLayer: null, recentLayer: null, seedTokens: [], recentTokens: []', async () => {
+    const result = await composeInheritance(1, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.25 });
+
+    expect(result.targetGeneration).toBe(1);
+    expect(result.seedLayer).toBeNull();
+    expect(result.recentLayer).toBeNull();
+    expect(result.seedTokens).toEqual([]);
+    expect(result.recentTokens).toEqual([]);
+  });
+
+  it('for generation 1 does NOT call readAllPriorTransmissions or executeSeedCompression', async () => {
+    await composeInheritance(1, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.25 });
+
+    // mockReaddir should not have been called (no disk reads)
+    expect(mockReaddir).not.toHaveBeenCalled();
+    // mockQuery should not have been called (no LLM calls)
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  it('for generation 1 emits inheritance:composed event with (1, 0)', async () => {
+    const emitSpy = vi.spyOn(lineageBus, 'emit');
+
+    await composeInheritance(1, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.25 });
+
+    expect(emitSpy).toHaveBeenCalledWith('inheritance:composed', 1, 0);
+    emitSpy.mockRestore();
+  });
+
+  it('for generation 2 with seedLayerAtBirth: true calls executeSeedCompression and returns non-null seedLayer', async () => {
+    const tx1 = makeTransmission({ id: 'tx-gen1-1', generationNumber: 1 });
+
+    // gen1 readdir + readFile for readAllPriorTransmissions(outputDir, 2)
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+    // gen1 readdir + readFile for readGenerationTransmissions(outputDir, 1)
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+
+    // Mock seed compression query
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('[1] Knowledge endures across time'));
+
+    const result = await composeInheritance(2, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.25 });
+
+    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(result.seedLayer).not.toBeNull();
+    expect(result.seedLayer).toContain('ANCESTRAL KNOWLEDGE');
+    expect(result.seedTokens).toEqual(['Knowledge endures across time']);
+  });
+
+  it('for generation 2 with seedLayerAtBirth: false returns seedLayer: null without calling executeSeedCompression', async () => {
+    const tx1 = makeTransmission({ id: 'tx-gen1-1', generationNumber: 1 });
+
+    // gen1 readdir + readFile for readAllPriorTransmissions(outputDir, 2)
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+    // gen1 readdir + readFile for readGenerationTransmissions(outputDir, 1)
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+
+    const result = await composeInheritance(2, '/output', { seedLayerAtBirth: false, recentLayerThreshold: 0.25 });
+
+    expect(mockQuery).not.toHaveBeenCalled();
+    expect(result.seedLayer).toBeNull();
+    expect(result.seedTokens).toEqual([]);
+  });
+
+  it('for generation 2 reads recent transmissions from generation 1 and returns formatted recentLayer', async () => {
+    const tx1 = makeTransmission({ id: 'tx-gen1-1', generationNumber: 1, role: 'builder', citizenId: 'abcdefgh-1234' });
+
+    // gen1 readdir + readFile for readAllPriorTransmissions(outputDir, 2)
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+    // gen1 readdir + readFile for readGenerationTransmissions(outputDir, 1) -- recent layer
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+
+    // Mock seed compression query
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('[1] Knowledge endures'));
+
+    const result = await composeInheritance(2, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.25 });
+
+    expect(result.recentLayer).not.toBeNull();
+    expect(result.recentLayer).toContain('INHERITANCE FROM GENERATION 1');
+    expect(result.recentTokens).toEqual(['Water boils at 100 degrees Celsius', 'The earth orbits the sun']);
+  });
+
+  it('emits inheritance:composed event with (targetGeneration, layerCount) where layerCount is count of non-null layers', async () => {
+    const emitSpy = vi.spyOn(lineageBus, 'emit');
+    const tx1 = makeTransmission({ id: 'tx-gen1-1', generationNumber: 1 });
+
+    // gen1 for readAllPriorTransmissions
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+    // gen1 for readGenerationTransmissions
+    mockReaddir.mockResolvedValueOnce(['c1-peak.json']);
+    mockReadFile.mockResolvedValueOnce(JSON.stringify(tx1));
+
+    // Mock seed compression query
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('[1] Knowledge endures'));
+
+    await composeInheritance(2, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.25 });
+
+    // Both seed and recent layers should be non-null -> layerCount = 2
+    expect(emitSpy).toHaveBeenCalledWith('inheritance:composed', 2, 2);
+    emitSpy.mockRestore();
+  });
+
+  it('returns InheritancePackage with composedAt as ISO timestamp string', async () => {
+    const result = await composeInheritance(1, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.25 });
+
+    expect(typeof result.composedAt).toBe('string');
+    expect(new Date(result.composedAt).toISOString()).toBe(result.composedAt);
   });
 });
