@@ -11,6 +11,7 @@ import type { CitizenRole, SimulationParameters } from '../schemas/index.js';
 import { CitizenConfigSchema } from '../schemas/index.js';
 import type { CitizenConfig } from '../schemas/index.js';
 import { assignDeathProfile } from './death-profiles.js';
+import { buildSystemPrompt } from '../roles/index.js';
 import { lineageBus } from '../events/index.js';
 
 /**
@@ -41,7 +42,11 @@ export function birthCitizen(
     id: citizenId,
     name: `citizen-gen${generationNumber}-${nanoid(6)}`,
     type: 'lineage-citizen',
-    systemPrompt: '', // Built by Roles phase (Phase 4)
+    systemPrompt: buildSystemPrompt(role, {
+      seedProblem: params.seedProblem,
+      generationNumber: generationNumber,
+      citizenName: `citizen-gen${generationNumber}-${nanoid(6)}`,
+    }),
     role,
     generationNumber,
     deathProfile,

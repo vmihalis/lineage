@@ -267,9 +267,20 @@ describe('birthCitizen', () => {
     expect(date.getTime()).not.toBeNaN();
   });
 
-  it('has systemPrompt as empty string (placeholder for Phase 4)', () => {
+  it('has non-empty systemPrompt containing role name and seed problem', () => {
     const citizen = birthCitizen('builder', 1, defaultParams);
-    expect(citizen.systemPrompt).toBe('');
+    expect(citizen.systemPrompt).not.toBe('');
+    expect(citizen.systemPrompt).toContain('Builder');
+    expect(citizen.systemPrompt).toContain('What is worth preserving?');
+    expect(citizen.systemPrompt).toContain('mortal');
+  });
+
+  it('produces different systemPrompts for different roles', () => {
+    const builder = birthCitizen('builder', 1, defaultParams);
+    const skeptic = birthCitizen('skeptic', 1, defaultParams);
+    expect(builder.systemPrompt).not.toBe(skeptic.systemPrompt);
+    expect(builder.systemPrompt).toContain('Builder');
+    expect(skeptic.systemPrompt).toContain('Skeptic');
   });
 
   it('has contextBudget initialized to 0', () => {
