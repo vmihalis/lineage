@@ -80,7 +80,10 @@ Plans:
   2. Skeptic role produces output that questions and stress-tests inherited claims
   3. Archivist, Elder Interpreter, and Observer roles each produce output consistent with their defined focus
   4. Role distribution is configurable -- changing roleDistribution in config changes which roles appear in a generation
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 04-01-PLAN.md -- Role assignment, system prompts, prompt builder, and birthCitizen integration
 
 ### Phase 5: Turn-Based Interaction
 **Goal**: Citizens within a generation execute sequentially, each building on what the previous citizen produced
@@ -156,7 +159,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 1. Project Scaffolding and Agent SDK | 0/1 | Planning complete | - |
 | 2. Type System, Config, and CLI | 0/2 | Planning complete | - |
 | 3. Mortality Engine | 0/2 | Planning complete | - |
-| 4. Roles | 0/0 | Not started | - |
+| 4. Roles | 0/1 | Planning complete | - |
 | 5. Turn-Based Interaction | 0/0 | Not started | - |
 | 6. Transmission System | 0/0 | Not started | - |
 | 7. Mutation Pipeline | 0/0 | Not started | - |
