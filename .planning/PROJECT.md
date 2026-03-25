@@ -19,11 +19,17 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] Simulation parameters as mutable config (generation size, death distributions, mutation rates, role distributions, etc.) — Validated in Phase 2: Type System, Config, and CLI
 - [x] Seed problem passed as CLI argument at launch — Validated in Phase 2: Type System, Config, and CLI
 - [x] Configurable number of generations (default 3) — Validated in Phase 2: Type System, Config, and CLI
+- [x] Context-as-lifespan tracking with safety buffer and threshold callbacks — Validated in Phase 3: Mortality Engine
+- [x] Death profile assignment (old-age/accident) via weighted random selection — Validated in Phase 3: Mortality Engine
+- [x] Old-age death with graduated decline signals at 75%, 85%, 95% context — Validated in Phase 3: Mortality Engine
+- [x] Accident death with random termination between 30-70% context — Validated in Phase 3: Mortality Engine
+- [x] Citizen birth factory creating fully configured citizens with hidden death profiles — Validated in Phase 3: Mortality Engine
+- [x] Generation 1 protection from accident death — Validated in Phase 3: Mortality Engine
 
 ### Active
 
 - [x] ~~Agent SDK setup with OAuth authentication for citizen agent calls~~ (→ Validated)
-- [ ] Mortality engine with 5 death profiles (old age, accident, cancer, young death, elder death) assigned hidden at birth
+- [x] ~~Mortality engine with death profiles (old age, accident) assigned hidden at birth~~ — core mortality implemented in Phase 3 (context-as-lifespan, death profiles, birth factory, death execution thresholds)
 - [ ] Turn-based citizen interaction within a generation (each sees previous citizen's output)
 - [ ] Sequential citizen execution (one at a time)
 - [ ] Transmission system: peak, elder, accident artifacts, cancer flags, collective transmissions
@@ -31,7 +37,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [ ] Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)
 - [ ] Generation manager orchestrating cohort lifecycle: birth → roles → interaction → death → next
 - [ ] 5 agent roles (Builder, Skeptic, Archivist, Elder Interpreter, Observer) as config-driven system prompts
-- [ ] Generation 1 protection from random death by default
+- [x] ~~Generation 1 protection from random death by default~~ — Validated in Phase 3: Mortality Engine
 - [ ] Civilization metrics computation (knowledge survival rate, seed problem progress, corruption level, generational diversity)
 - [ ] Real-time event stream output (births, deaths, transmissions, mutations)
 - [ ] Generation summary output at each generation boundary
@@ -90,4 +96,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 2 completion*
+*Last updated: 2026-03-24 after Phase 3 completion*
