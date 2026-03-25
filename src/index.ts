@@ -13,3 +13,5 @@ export { assignRole, assignRoles, buildSystemPrompt, ROLE_PROMPTS } from './role
 export type { PromptContext } from './roles/index.js';
 export { TurnOutputSchema, formatHandoff, buildTurnPrompt, runTurns, executeCitizenTurn } from './interaction/index.js';
 export type { TurnOutput, TurnRunnerConfig, TurnResult } from './interaction/index.js';
+export { extractAnchorTokens, buildPeakTransmissionPrompt, executePeakTransmission, writeTransmission } from './transmission/index.js';
+export type { TransmissionResult } from './transmission/index.js';
