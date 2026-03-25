@@ -30,6 +30,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] birthCitizen() produces citizens with non-empty, role-specific system prompts — Validated in Phase 4: Roles
 - [x] Turn-based citizen interaction within a generation (each sees previous citizen's output) — Validated in Phase 5: Turn-Based Interaction
 - [x] Sequential citizen execution (one at a time) — Validated in Phase 5: Turn-Based Interaction
+- [x] Peak transmission at context thresholds with structured anchor token format and disk persistence — Validated in Phase 6: Transmission System
 
 ### Active
 
@@ -37,7 +38,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] ~~Mortality engine with death profiles (old age, accident) assigned hidden at birth~~ — core mortality implemented in Phase 3 (context-as-lifespan, death profiles, birth factory, death execution thresholds)
 - [x] ~~Turn-based citizen interaction within a generation (each sees previous citizen's output)~~ (→ Validated)
 - [x] ~~Sequential citizen execution (one at a time)~~ (→ Validated)
-- [ ] Transmission system: peak, elder, accident artifacts, cancer flags, collective transmissions
+- [x] ~~Transmission system: peak, elder, accident artifacts, cancer flags, collective transmissions~~ — peak transmission implemented in Phase 6 (anchor parsing, mortality-aware prompts, Agent SDK execution, disk persistence with events)
 - [ ] Mutation pipeline that corrupts transmissions in transit (small, large, generative, cancer propagation)
 - [ ] Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)
 - [ ] Generation manager orchestrating cohort lifecycle: birth → roles → interaction → death → next
@@ -101,4 +102,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 5 completion*
+*Last updated: 2026-03-24 after Phase 6 completion*
