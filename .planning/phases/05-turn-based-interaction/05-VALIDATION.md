@@ -38,9 +38,9 @@ created: 2026-03-24
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 05-01-01 | 01 | 1 | INTR-01 | unit | `npx vitest run src/turn` | ❌ W0 | ⬜ pending |
-| 05-01-02 | 01 | 1 | INTR-02 | unit | `npx vitest run src/turn` | ❌ W0 | ⬜ pending |
-| 05-01-03 | 01 | 1 | INTR-03 | integration | `npx vitest run src/turn` | ❌ W0 | ⬜ pending |
+| 05-01-01 | 01 | 1 | INTR-02, INTR-03 | unit | `npx vitest run src/interaction/interaction.test.ts` | ❌ W0 | ⬜ pending |
+| 05-02-01 | 02 | 2 | INTR-01, INTR-02, INTR-03 | unit | `npx vitest run src/interaction/interaction.test.ts` | ❌ W0 | ⬜ pending |
+| 05-02-02 | 02 | 2 | INTR-01 | integration | `npx vitest run && npx tsc --noEmit` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -48,7 +48,7 @@ created: 2026-03-24
 
 ## Wave 0 Requirements
 
-- [ ] `src/turn/__tests__/turn-runner.test.ts` — stubs for INTR-01, INTR-02, INTR-03
+- [ ] `src/interaction/interaction.test.ts` — stubs for INTR-01, INTR-02, INTR-03
 - [ ] Test fixtures for generation with multiple citizens and role assignments
 
 *Existing vitest infrastructure covers framework needs.*
