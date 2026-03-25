@@ -11,3 +11,5 @@ export { ContextBudget, assignDeathProfile, calculateAccidentPoint, birthCitizen
 export type { ContextBudgetConfig, ContextThreshold } from './mortality/index.js';
 export { assignRole, assignRoles, buildSystemPrompt, ROLE_PROMPTS } from './roles/index.js';
 export type { PromptContext } from './roles/index.js';
+export { TurnOutputSchema, formatHandoff, buildTurnPrompt, runTurns, executeCitizenTurn } from './interaction/index.js';
+export type { TurnOutput, TurnRunnerConfig, TurnResult } from './interaction/index.js';
