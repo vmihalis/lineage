@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-03-25T08:11:21.899Z"
+status: ready_for_verification
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-03-25T08:52:03.000Z"
 progress:
   total_phases: 10
   completed_phases: 8
-  total_plans: 14
-  completed_plans: 14
+  total_plans: 16
+  completed_plans: 15
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mortality changes what a mind produces -- urgency, loss, and the knowledge of ending create different thinking than comfort and infinite time.
-**Current focus:** Phase 08 — inheritance-composer
+**Current focus:** Phase 09 — generation-manager
 
 ## Current Position
 
-Phase: 9
-Plan: Not started
+Phase: 09 (generation-manager) — EXECUTING
+Plan: 2 of 2 (complete)
 
 ## Performance Metrics
 
@@ -60,6 +60,8 @@ Plan: Not started
 | Phase 07-mutation-pipeline P02 | 3min | 2 tasks | 5 files |
 | Phase 08-inheritance-composer P01 | 3min | 2 tasks | 4 files |
 | Phase 08-inheritance-composer P02 | 3min | 2 tasks | 5 files |
+| Phase 09-generation-manager P01 | 4min | 1 tasks | 3 files |
+| Phase 09-generation-manager P02 | 3min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -119,6 +121,13 @@ Recent decisions affecting current work:
 - [Phase 08-inheritance-composer]: executeSeedCompression follows exact mutation-executor.ts query() pattern: maxTurns 1, dontAsk, no persist
 - [Phase 08-inheritance-composer]: Generation 1 early return emits event with layerCount 0 before returning null layers
 - [Phase 08-inheritance-composer]: INHERITANCE_RECENT_LABEL exported as const literal type for Phase 9 threshold label matching
+- [Phase 09-generation-manager]: Simplified mortality: all citizens complete turns then all produce peak transmissions (no mid-conversation death in v1)
+- [Phase 09-generation-manager]: Write only final (possibly mutated) transmission to disk, not both original and mutated
+- [Phase 09-generation-manager]: Fixed 0.45 contextPercentage for peak prompt (midpoint of default window) since full ContextBudget not wired in v1
+- [Phase 09-generation-manager]: citizen:died emitted during DYING after peak transmission produced, before TRANSMITTING phase writes to disk
+- [Phase 09-generation-manager]: Inheritance layers prepended to seedProblem via .filter(Boolean).join, gen 1 gets original seedProblem unchanged
+- [Phase 09-generation-manager]: Removed simulation:started from cli.ts since runSimulation() owns lifecycle events
+- [Phase 09-generation-manager]: Generation state written to {outputDir}/generations/gen{N}.json matching transmission path convention
 
 ### Pending Todos
 
@@ -132,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T08:06:38.957Z
-Stopped at: Completed 08-02-PLAN.md
+Last session: 2026-03-25T08:52:03.000Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None
