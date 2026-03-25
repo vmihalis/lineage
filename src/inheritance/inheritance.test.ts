@@ -9,6 +9,12 @@ vi.mock('node:fs/promises', () => ({
 }));
 
 import { readGenerationTransmissions, readAllPriorTransmissions } from './transmission-reader.js';
+import {
+  SEED_COMPRESSION_SYSTEM_PROMPT,
+  buildSeedCompressionPrompt,
+  formatSeedLayer,
+} from './seed-layer.js';
+import { formatRecentLayer } from './recent-layer.js';
 import { TransmissionSchema } from '../schemas/index.js';
 import type { Transmission } from '../schemas/index.js';
 
@@ -140,5 +146,160 @@ describe('readAllPriorTransmissions', () => {
 
     expect(result).toHaveLength(3);
     expect(result.map(t => t.id)).toEqual(['tx-1a', 'tx-1b', 'tx-2a']);
+  });
+});
+
+// --- SEED_COMPRESSION_SYSTEM_PROMPT tests ---
+
+describe('SEED_COMPRESSION_SYSTEM_PROMPT', () => {
+  it('is a non-empty string', () => {
+    expect(typeof SEED_COMPRESSION_SYSTEM_PROMPT).toBe('string');
+    expect(SEED_COMPRESSION_SYSTEM_PROMPT.length).toBeGreaterThan(0);
+  });
+
+  it('contains "civilization" or "memory" (role framing)', () => {
+    expect(SEED_COMPRESSION_SYSTEM_PROMPT).toMatch(/civilization|memory/i);
+  });
+});
+
+// --- buildSeedCompressionPrompt tests ---
+
+describe('buildSeedCompressionPrompt', () => {
+  it('with 2 generations of tokens returns string containing "Generation 1 transmitted:" and "Generation 2 transmitted:"', () => {
+    const tokensByGen = new Map<number, string[]>();
+    tokensByGen.set(1, ['Water boils at 100C', 'Fire is hot']);
+    tokensByGen.set(2, ['The sun rises daily']);
+
+    const result = buildSeedCompressionPrompt(tokensByGen, 3);
+
+    expect(result).toContain('Generation 1 transmitted:');
+    expect(result).toContain('Generation 2 transmitted:');
+  });
+
+  it('includes all token text from each generation', () => {
+    const tokensByGen = new Map<number, string[]>();
+    tokensByGen.set(1, ['Water boils at 100C', 'Fire is hot']);
+    tokensByGen.set(2, ['The sun rises daily']);
+
+    const result = buildSeedCompressionPrompt(tokensByGen, 3);
+
+    expect(result).toContain('Water boils at 100C');
+    expect(result).toContain('Fire is hot');
+    expect(result).toContain('The sun rises daily');
+  });
+
+  it('contains "3-5 essential claims" instruction', () => {
+    const tokensByGen = new Map<number, string[]>();
+    tokensByGen.set(1, ['Knowledge is power']);
+
+    const result = buildSeedCompressionPrompt(tokensByGen, 2);
+
+    expect(result).toContain('3-5 essential claims');
+  });
+
+  it('contains "[1]" format instruction for anchor token compatibility', () => {
+    const tokensByGen = new Map<number, string[]>();
+    tokensByGen.set(1, ['Knowledge is power']);
+
+    const result = buildSeedCompressionPrompt(tokensByGen, 2);
+
+    expect(result).toContain('[1]');
+  });
+
+  it('contains "Return ONLY" no-preamble instruction', () => {
+    const tokensByGen = new Map<number, string[]>();
+    tokensByGen.set(1, ['Knowledge is power']);
+
+    const result = buildSeedCompressionPrompt(tokensByGen, 2);
+
+    expect(result).toContain('Return ONLY');
+  });
+});
+
+// --- formatSeedLayer tests ---
+
+describe('formatSeedLayer', () => {
+  it('with 3 tokens returns string starting with "ANCESTRAL KNOWLEDGE"', () => {
+    const tokens = ['Truth endures', 'Knowledge compounds', 'Loss teaches'];
+
+    const result = formatSeedLayer(tokens, 5);
+
+    expect(result).toMatch(/^ANCESTRAL KNOWLEDGE/);
+  });
+
+  it('with empty array returns empty string', () => {
+    const result = formatSeedLayer([], 0);
+
+    expect(result).toBe('');
+  });
+
+  it('includes all provided tokens prefixed with "- "', () => {
+    const tokens = ['Truth endures', 'Knowledge compounds'];
+
+    const result = formatSeedLayer(tokens, 3);
+
+    expect(result).toContain('- Truth endures');
+    expect(result).toContain('- Knowledge compounds');
+  });
+
+  it('includes generation count in header', () => {
+    const result = formatSeedLayer(['A claim'], 7);
+
+    expect(result).toContain('7 generation(s)');
+  });
+});
+
+// --- formatRecentLayer tests ---
+
+describe('formatRecentLayer', () => {
+  it('with 2 transmissions returns string starting with "INHERITANCE FROM GENERATION"', () => {
+    const txs = [
+      makeTransmission({ id: 'tx-r1', role: 'builder', citizenId: 'abcdefgh-1234' }),
+      makeTransmission({ id: 'tx-r2', role: 'skeptic', citizenId: 'ijklmnop-5678' }),
+    ];
+
+    const result = formatRecentLayer(txs, 2);
+
+    expect(result).toMatch(/^INHERITANCE FROM GENERATION/);
+  });
+
+  it('includes role and citizenId context per transmission using "--- role (citizen citizenId) ---" header format', () => {
+    const txs = [
+      makeTransmission({ id: 'tx-r1', role: 'builder', citizenId: 'abcdefgh-1234' }),
+    ];
+
+    const result = formatRecentLayer(txs, 2);
+
+    expect(result).toContain('--- builder (citizen abcdefgh) ---');
+  });
+
+  it('includes each transmission\'s anchor tokens prefixed with "- "', () => {
+    const txs = [
+      makeTransmission({
+        id: 'tx-r1',
+        anchorTokens: ['Water boils at 100 degrees Celsius', 'The earth orbits the sun'],
+      }),
+    ];
+
+    const result = formatRecentLayer(txs, 2);
+
+    expect(result).toContain('- Water boils at 100 degrees Celsius');
+    expect(result).toContain('- The earth orbits the sun');
+  });
+
+  it('with empty array returns empty string', () => {
+    const result = formatRecentLayer([], 1);
+
+    expect(result).toBe('');
+  });
+
+  it('ends with a guidance instruction for the receiving citizen', () => {
+    const txs = [
+      makeTransmission({ id: 'tx-r1' }),
+    ];
+
+    const result = formatRecentLayer(txs, 2);
+
+    expect(result).toMatch(/Consider this inherited knowledge|Build on|question|preserve/);
   });
 });
