@@ -9,9 +9,9 @@ vi.mock('@anthropic-ai/claude-agent-sdk', () => ({
 // Mock LineageStateManager
 const mockWrite = vi.fn().mockResolvedValue(undefined);
 vi.mock('../state/index.js', () => ({
-  LineageStateManager: vi.fn().mockImplementation(() => ({
-    write: mockWrite,
-  })),
+  LineageStateManager: class MockStateManager {
+    write = mockWrite;
+  },
 }));
 
 import { extractAnchorTokens } from './anchor-parser.js';
