@@ -28,13 +28,15 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] Five distinct role system prompts (Builder, Skeptic, Archivist, Elder Interpreter, Observer) with weighted random assignment — Validated in Phase 4: Roles
 - [x] System prompts composed with role template + seed problem + generation context + mortality awareness — Validated in Phase 4: Roles
 - [x] birthCitizen() produces citizens with non-empty, role-specific system prompts — Validated in Phase 4: Roles
+- [x] Turn-based citizen interaction within a generation (each sees previous citizen's output) — Validated in Phase 5: Turn-Based Interaction
+- [x] Sequential citizen execution (one at a time) — Validated in Phase 5: Turn-Based Interaction
 
 ### Active
 
 - [x] ~~Agent SDK setup with OAuth authentication for citizen agent calls~~ (→ Validated)
 - [x] ~~Mortality engine with death profiles (old age, accident) assigned hidden at birth~~ — core mortality implemented in Phase 3 (context-as-lifespan, death profiles, birth factory, death execution thresholds)
-- [ ] Turn-based citizen interaction within a generation (each sees previous citizen's output)
-- [ ] Sequential citizen execution (one at a time)
+- [x] ~~Turn-based citizen interaction within a generation (each sees previous citizen's output)~~ (→ Validated)
+- [x] ~~Sequential citizen execution (one at a time)~~ (→ Validated)
 - [ ] Transmission system: peak, elder, accident artifacts, cancer flags, collective transmissions
 - [ ] Mutation pipeline that corrupts transmissions in transit (small, large, generative, cancer propagation)
 - [ ] Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)
@@ -99,4 +101,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 4 completion*
+*Last updated: 2026-03-24 after Phase 5 completion*
