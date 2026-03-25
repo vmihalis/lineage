@@ -110,8 +110,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md -- Anchor token parser and peak transmission prompt builder (TDD pure functions)
-- [ ] 06-02-PLAN.md -- Transmission executor (Agent SDK call), writer (disk persistence + event), and barrel exports
+- [x] 06-01-PLAN.md -- Anchor token parser and peak transmission prompt builder (TDD pure functions)
+- [x] 06-02-PLAN.md -- Transmission executor (Agent SDK call), writer (disk persistence + event), and barrel exports
 
 ### Phase 7: Mutation Pipeline
 **Goal**: Transmissions are corrupted in transit between generations through LLM-powered semantic transformations

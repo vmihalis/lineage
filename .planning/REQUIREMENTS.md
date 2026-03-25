@@ -37,15 +37,15 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 ### Interaction
 
-- [ ] **INTR-01**: Citizens within a generation execute turn-based sequentially
-- [ ] **INTR-02**: Each citizen sees the previous citizen's output as part of their input context
-- [ ] **INTR-03**: Turn order creates within-generation narrative (structured handoffs between citizens)
+- [x] **INTR-01**: Citizens within a generation execute turn-based sequentially
+- [x] **INTR-02**: Each citizen sees the previous citizen's output as part of their input context
+- [x] **INTR-03**: Turn order creates within-generation narrative (structured handoffs between citizens)
 
 ### Transmission
 
-- [ ] **TRAN-01**: Peak transmission triggered at 40-50% context -- agent prompted to distill best thinking
-- [ ] **TRAN-02**: Peak transmission uses structured output format with anchor tokens (anti-telephone-effect)
-- [ ] **TRAN-03**: Transmission persisted to disk with metadata (citizenId, generation, role, type, timestamp)
+- [x] **TRAN-01**: Peak transmission triggered at 40-50% context -- agent prompted to distill best thinking
+- [x] **TRAN-02**: Peak transmission uses structured output format with anchor tokens (anti-telephone-effect)
+- [x] **TRAN-03**: Transmission persisted to disk with metadata (citizenId, generation, role, type, timestamp)
 
 ### Mutation
 
@@ -166,12 +166,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ROLE-04 | Phase 4 | Complete |
 | ROLE-05 | Phase 4 | Complete |
 | ROLE-06 | Phase 4 | Complete |
-| INTR-01 | Phase 5 | Pending |
-| INTR-02 | Phase 5 | Pending |
-| INTR-03 | Phase 5 | Pending |
-| TRAN-01 | Phase 6 | Pending |
-| TRAN-02 | Phase 6 | Pending |
-| TRAN-03 | Phase 6 | Pending |
+| INTR-01 | Phase 5 | Complete |
+| INTR-02 | Phase 5 | Complete |
+| INTR-03 | Phase 5 | Complete |
+| TRAN-01 | Phase 6 | Complete |
+| TRAN-02 | Phase 6 | Complete |
+| TRAN-03 | Phase 6 | Complete |
 | MUTN-01 | Phase 7 | Pending |
 | MUTN-02 | Phase 7 | Pending |
 | MUTN-03 | Phase 7 | Pending |
