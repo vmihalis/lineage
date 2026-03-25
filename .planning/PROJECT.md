@@ -31,6 +31,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] Turn-based citizen interaction within a generation (each sees previous citizen's output) — Validated in Phase 5: Turn-Based Interaction
 - [x] Sequential citizen execution (one at a time) — Validated in Phase 5: Turn-Based Interaction
 - [x] Peak transmission at context thresholds with structured anchor token format and disk persistence — Validated in Phase 6: Transmission System
+- [x] Mutation pipeline with small drift and large inversion mutations applied probabilistically via Agent SDK — Validated in Phase 7: Mutation Pipeline
 
 ### Active
 
@@ -39,7 +40,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] ~~Turn-based citizen interaction within a generation (each sees previous citizen's output)~~ (→ Validated)
 - [x] ~~Sequential citizen execution (one at a time)~~ (→ Validated)
 - [x] ~~Transmission system: peak, elder, accident artifacts, cancer flags, collective transmissions~~ — peak transmission implemented in Phase 6 (anchor parsing, mortality-aware prompts, Agent SDK execution, disk persistence with events)
-- [ ] Mutation pipeline that corrupts transmissions in transit (small, large, generative, cancer propagation)
+- [x] ~~Mutation pipeline that corrupts transmissions in transit (small, large, generative, cancer propagation)~~ — small drift and large inversion mutations implemented in Phase 7 (probabilistic decider, Agent SDK executor, pipeline orchestrator with event emission)
 - [ ] Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)
 - [ ] Generation manager orchestrating cohort lifecycle: birth → roles → interaction → death → next
 - [x] ~~5 agent roles (Builder, Skeptic, Archivist, Elder Interpreter, Observer) as config-driven system prompts~~ — Validated in Phase 4: Roles
@@ -102,4 +103,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 6 completion*
+*Last updated: 2026-03-24 after Phase 7 completion*
