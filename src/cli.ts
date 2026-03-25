@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { loadConfig } from './config/loader.js';
-import { lineageBus } from './events/bus.js';
+import { runSimulation } from './generation/simulation-runner.js';
 import type { SimulationParameters } from './schemas/simulation.js';
 
 export function createProgram(): Command {
@@ -24,8 +24,6 @@ export function createProgram(): Command {
           output: options.output,
         });
 
-        lineageBus.emit('simulation:started', config.seedProblem, config);
-
         console.log('LINEAGE - Simulation configured');
         console.log(`  Seed problem: ${config.seedProblem}`);
         console.log(`  Generations: ${config.maxGenerations}`);
@@ -33,10 +31,13 @@ export function createProgram(): Command {
         console.log(`  Mutation rate: ${config.mutationRate}`);
         console.log(`  Gen 1 protection: ${config.gen1Protection}`);
         console.log(`  Output: ${config.outputDir}`);
-
-        // Future phases will add simulation execution here
         console.log('---');
-        console.log('Simulation bootstrap complete. Execution engine not yet implemented.');
+        console.log('Starting simulation...');
+
+        const generations = await runSimulation(config);
+
+        console.log('---');
+        console.log(`Simulation complete. ${generations.length} generation(s) executed.`);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.error(`Error: ${message}`);

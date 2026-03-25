@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Command } from 'commander';
+
+// Mock runSimulation to prevent Agent SDK calls in CLI tests
+const mockRunSimulation = vi.fn();
+vi.mock('./generation/simulation-runner.js', () => ({
+  runSimulation: (...args: unknown[]) => mockRunSimulation(...args),
+}));
+
 import { createProgram } from './cli.js';
 
 /**
@@ -98,22 +105,25 @@ describe('CLI action integration', () => {
   beforeEach(() => {
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockRunSimulation.mockResolvedValue([{ id: 'gen-1', number: 1, phase: 'COMPLETE', citizenIds: [], transmissionIds: [] }]);
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    mockRunSimulation.mockReset();
   });
 
-  it('calls loadConfig with seed problem and emits simulation:started', async () => {
+  it('calls loadConfig with seed problem and starts simulation', async () => {
     const program = createProgram();
     program.exitOverride();
 
     await program.parseAsync(['node', 'cli', 'What is consciousness?']);
 
-    // Verify console output confirms successful config loading
+    // Verify console output confirms successful config loading and simulation
     const logs = vi.mocked(console.log).mock.calls.map((c) => c[0]);
     expect(logs).toContain('LINEAGE - Simulation configured');
     expect(logs.some((l) => typeof l === 'string' && l.includes('What is consciousness?'))).toBe(true);
+    expect(logs.some((l) => typeof l === 'string' && l.includes('Simulation complete'))).toBe(true);
   });
 
   it('passes --generations and --size to loadConfig', async () => {
@@ -125,6 +135,17 @@ describe('CLI action integration', () => {
     const logs = vi.mocked(console.log).mock.calls.map((c) => c[0]);
     expect(logs.some((l) => typeof l === 'string' && l.includes('10'))).toBe(true);
     expect(logs.some((l) => typeof l === 'string' && l.includes('8'))).toBe(true);
+  });
+
+  it('calls runSimulation with loaded config', async () => {
+    const program = createProgram();
+    program.exitOverride();
+
+    await program.parseAsync(['node', 'cli', 'What is consciousness?']);
+
+    expect(mockRunSimulation).toHaveBeenCalledOnce();
+    const [config] = mockRunSimulation.mock.calls[0];
+    expect(config.seedProblem).toBe('What is consciousness?');
   });
 });
 
