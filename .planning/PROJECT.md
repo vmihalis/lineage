@@ -25,6 +25,9 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] Accident death with random termination between 30-70% context — Validated in Phase 3: Mortality Engine
 - [x] Citizen birth factory creating fully configured citizens with hidden death profiles — Validated in Phase 3: Mortality Engine
 - [x] Generation 1 protection from accident death — Validated in Phase 3: Mortality Engine
+- [x] Five distinct role system prompts (Builder, Skeptic, Archivist, Elder Interpreter, Observer) with weighted random assignment — Validated in Phase 4: Roles
+- [x] System prompts composed with role template + seed problem + generation context + mortality awareness — Validated in Phase 4: Roles
+- [x] birthCitizen() produces citizens with non-empty, role-specific system prompts — Validated in Phase 4: Roles
 
 ### Active
 
@@ -36,7 +39,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [ ] Mutation pipeline that corrupts transmissions in transit (small, large, generative, cancer propagation)
 - [ ] Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)
 - [ ] Generation manager orchestrating cohort lifecycle: birth → roles → interaction → death → next
-- [ ] 5 agent roles (Builder, Skeptic, Archivist, Elder Interpreter, Observer) as config-driven system prompts
+- [x] ~~5 agent roles (Builder, Skeptic, Archivist, Elder Interpreter, Observer) as config-driven system prompts~~ — Validated in Phase 4: Roles
 - [x] ~~Generation 1 protection from random death by default~~ — Validated in Phase 3: Mortality Engine
 - [ ] Civilization metrics computation (knowledge survival rate, seed problem progress, corruption level, generational diversity)
 - [ ] Real-time event stream output (births, deaths, transmissions, mutations)
@@ -96,4 +99,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 3 completion*
+*Last updated: 2026-03-24 after Phase 4 completion*
