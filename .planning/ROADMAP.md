@@ -136,7 +136,11 @@ Plans:
   1. At birth, a citizen receives a seed layer -- a compressed summary of the civilization's oldest, most repeated knowledge
   2. At maturity (~20-30% context), a citizen receives a recent layer -- fuller detail from the most recent generation's transmissions
   3. Inheritance staging rates are configurable -- changing the config changes when layers are delivered
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md -- Transmission reader, seed compression prompt builder, seed/recent layer formatters (TDD pure functions)
+- [ ] 08-02-PLAN.md -- Seed compression executor (Agent SDK call), inheritance composer orchestrator, and barrel exports
 
 ### Phase 9: Generation Manager
 **Goal**: The full civilization lifecycle runs autonomously across multiple generations: birth, interaction, death, transmission, and inheritance composing into the next generation
@@ -175,6 +179,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 5. Turn-Based Interaction | 0/2 | Planning complete | - |
 | 6. Transmission System | 0/2 | Planning complete | - |
 | 7. Mutation Pipeline | 1/2 | In Progress|  |
-| 8. Inheritance Composer | 0/0 | Not started | - |
+| 8. Inheritance Composer | 0/2 | Planning complete | - |
 | 9. Generation Manager | 0/0 | Not started | - |
 | 10. Event Stream and Terminal Output | 0/0 | Not started | - |
