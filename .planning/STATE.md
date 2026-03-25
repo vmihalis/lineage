@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to plan
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-24T23:28:56.803Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-25T00:06:26.069Z"
 progress:
   total_phases: 10
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,11 +19,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mortality changes what a mind produces -- urgency, loss, and the knowledge of ending create different thinking than comfort and infinite time.
-**Current focus:** Phase 02 — type-system-config-and-cli
+**Current focus:** Phase 03 — mortality-engine
 
 ## Current Position
 
-Phase: 3
+Phase: 4
 Plan: Not started
 
 ## Performance Metrics
@@ -49,6 +49,8 @@ Plan: Not started
 | Phase 01 P01 | 4min | 3 tasks | 8 files |
 | Phase 02 P01 | 7min | 2 tasks | 12 files |
 | Phase 02 P02 | 6min | 2 tasks | 11 files |
+| Phase 03-mortality-engine P01 | 5min | 2 tasks | 6 files |
+| Phase 03-mortality-engine P02 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -70,6 +72,11 @@ Recent decisions affecting current work:
 - [Phase 02]: createProgram() factory pattern for testable Commander CLI instances
 - [Phase 02]: CLI action re-throws errors instead of process.exit for testability
 - [Phase 02]: DEFAULT_SIMULATION_PARAMETERS omits seedProblem (always required from CLI)
+- [Phase 03-mortality-engine]: CitizenConfigSchema.parse() in birthCitizen factory propagates AgentConfig defaults rather than hardcoding
+- [Phase 03-mortality-engine]: Threshold callbacks use label-based Set deduplication for exactly-once firing
+- [Phase 03-mortality-engine]: Old-age thresholds at fixed 75%/85%/95% with configurable peak-transmission via peakTransmissionWindow.min
+- [Phase 03-mortality-engine]: Accident citizens dying before peakTransmissionMin excluded from peak-transmission threshold
+- [Phase 03-mortality-engine]: Decline signals are SYSTEM NOTICE plain text for injection into agent conversation context
 
 ### Pending Todos
 
@@ -83,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T23:20:35.089Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-25T00:02:32.627Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None

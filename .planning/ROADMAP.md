@@ -68,7 +68,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- ContextBudget class, death profile assignment, and citizen birth factory
+- [x] 03-01-PLAN.md -- ContextBudget class, death profile assignment, and citizen birth factory
 - [ ] 03-02-PLAN.md -- Death execution thresholds for old-age and accident profiles
 
 ### Phase 4: Roles
