@@ -49,24 +49,24 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 ### Mutation
 
-- [ ] **MUTN-01**: Small mutation -- LLM-based semantic drift (precise claim becomes slightly less precise, name forgotten but idea survives)
-- [ ] **MUTN-02**: Large mutation -- LLM-based semantic inversion (core claim inverts, warning becomes instruction)
-- [ ] **MUTN-03**: Mutation applied probabilistically based on configured mutation rate
-- [ ] **MUTN-04**: Large mutation probability configurable separately from base mutation rate
+- [x] **MUTN-01**: Small mutation -- LLM-based semantic drift (precise claim becomes slightly less precise, name forgotten but idea survives)
+- [x] **MUTN-02**: Large mutation -- LLM-based semantic inversion (core claim inverts, warning becomes instruction)
+- [x] **MUTN-03**: Mutation applied probabilistically based on configured mutation rate
+- [x] **MUTN-04**: Large mutation probability configurable separately from base mutation rate
 
 ### Inheritance
 
-- [ ] **INHR-01**: Seed layer delivered at birth -- compressed summary of civilization's oldest, most repeated knowledge
-- [ ] **INHR-02**: Recent layer delivered at maturity (~20-30% context) -- fuller detail of most recent generation's transmissions
-- [ ] **INHR-03**: Inheritance staging rates configurable via simulation parameters
+- [x] **INHR-01**: Seed layer delivered at birth -- compressed summary of civilization's oldest, most repeated knowledge
+- [x] **INHR-02**: Recent layer delivered at maturity (~20-30% context) -- fuller detail of most recent generation's transmissions
+- [x] **INHR-03**: Inheritance staging rates configurable via simulation parameters
 
 ### Generation Management
 
-- [ ] **GENM-01**: Generation manager orchestrates full cohort lifecycle: birth -> roles -> interaction -> death -> next
-- [ ] **GENM-02**: State machine with clear phases: INIT -> BIRTHING -> INTERACTING -> DYING -> TRANSMITTING -> COMPLETE
-- [ ] **GENM-03**: Configurable generation size (citizens per cohort)
-- [ ] **GENM-04**: Configurable maximum number of generations (default 3, safety limit)
-- [ ] **GENM-05**: Generation boundary triggers inheritance composition for next generation
+- [x] **GENM-01**: Generation manager orchestrates full cohort lifecycle: birth -> roles -> interaction -> death -> next
+- [x] **GENM-02**: State machine with clear phases: INIT -> BIRTHING -> INTERACTING -> DYING -> TRANSMITTING -> COMPLETE
+- [x] **GENM-03**: Configurable generation size (citizens per cohort)
+- [x] **GENM-04**: Configurable maximum number of generations (default 3, safety limit)
+- [x] **GENM-05**: Generation boundary triggers inheritance composition for next generation
 
 ### Simulation Config
 
@@ -172,18 +172,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRAN-01 | Phase 6 | Complete |
 | TRAN-02 | Phase 6 | Complete |
 | TRAN-03 | Phase 6 | Complete |
-| MUTN-01 | Phase 7 | Pending |
-| MUTN-02 | Phase 7 | Pending |
-| MUTN-03 | Phase 7 | Pending |
-| MUTN-04 | Phase 7 | Pending |
-| INHR-01 | Phase 8 | Pending |
-| INHR-02 | Phase 8 | Pending |
-| INHR-03 | Phase 8 | Pending |
-| GENM-01 | Phase 9 | Pending |
-| GENM-02 | Phase 9 | Pending |
-| GENM-03 | Phase 9 | Pending |
-| GENM-04 | Phase 9 | Pending |
-| GENM-05 | Phase 9 | Pending |
+| MUTN-01 | Phase 7 | Complete |
+| MUTN-02 | Phase 7 | Complete |
+| MUTN-03 | Phase 7 | Complete |
+| MUTN-04 | Phase 7 | Complete |
+| INHR-01 | Phase 8 | Complete |
+| INHR-02 | Phase 8 | Complete |
+| INHR-03 | Phase 8 | Complete |
+| GENM-01 | Phase 9 | Complete |
+| GENM-02 | Phase 9 | Complete |
+| GENM-03 | Phase 9 | Complete |
+| GENM-04 | Phase 9 | Complete |
+| GENM-05 | Phase 9 | Complete |
 | CONF-01 | Phase 2 | Complete |
 | CONF-02 | Phase 2 | Complete |
 | CONF-03 | Phase 2 | Complete |

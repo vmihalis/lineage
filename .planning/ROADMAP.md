@@ -152,11 +152,11 @@ Plans:
   3. Generation size (citizens per cohort) is configurable and respected
   4. The simulation stops after the configured maximum number of generations
   5. At each generation boundary, inheritance is composed and delivered to the next generation's citizens
-**Plans:** 2 plans
+**Plans:** 0/2 plans executed
 
 Plans:
 - [x] 09-01-PLAN.md -- Generation runner state machine and simulation outer loop with TDD tests
-- [x] 09-02-PLAN.md -- Generation state persistence, barrel exports, and CLI integration
+- [ ] 09-02-PLAN.md -- Generation state persistence, barrel exports, and CLI integration
 
 ### Phase 10: Event Stream and Terminal Output
 **Goal**: Running LINEAGE produces a compelling real-time terminal experience showing births, deaths, transmissions, and mutations as they happen
@@ -184,5 +184,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 6. Transmission System | 0/2 | Planning complete | - |
 | 7. Mutation Pipeline | 1/2 | In Progress|  |
 | 8. Inheritance Composer | 0/2 | Planning complete | - |
-| 9. Generation Manager | 2/2 | Complete | 2026-03-25 |
+| 9. Generation Manager | 0/2 | Planned    |  |
 | 10. Event Stream and Terminal Output | 0/0 | Not started | - |
