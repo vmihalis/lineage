@@ -32,6 +32,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] Sequential citizen execution (one at a time) — Validated in Phase 5: Turn-Based Interaction
 - [x] Peak transmission at context thresholds with structured anchor token format and disk persistence — Validated in Phase 6: Transmission System
 - [x] Mutation pipeline with small drift and large inversion mutations applied probabilistically via Agent SDK — Validated in Phase 7: Mutation Pipeline
+- [x] Inheritance composer with staged delivery (seed at birth, recent at maturity) with LLM-powered seed compression — Validated in Phase 8: Inheritance Composer
 
 ### Active
 
@@ -41,7 +42,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] ~~Sequential citizen execution (one at a time)~~ (→ Validated)
 - [x] ~~Transmission system: peak, elder, accident artifacts, cancer flags, collective transmissions~~ — peak transmission implemented in Phase 6 (anchor parsing, mortality-aware prompts, Agent SDK execution, disk persistence with events)
 - [x] ~~Mutation pipeline that corrupts transmissions in transit (small, large, generative, cancer propagation)~~ — small drift and large inversion mutations implemented in Phase 7 (probabilistic decider, Agent SDK executor, pipeline orchestrator with event emission)
-- [ ] Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)
+- [x] ~~Inheritance composer with staged delivery (seed layer at birth, recent layer at maturity, archive on request)~~ — Validated in Phase 8: Inheritance Composer (seed compression via Agent SDK, configurable staging rates, generation 1 null-layer optimization)
 - [ ] Generation manager orchestrating cohort lifecycle: birth → roles → interaction → death → next
 - [x] ~~5 agent roles (Builder, Skeptic, Archivist, Elder Interpreter, Observer) as config-driven system prompts~~ — Validated in Phase 4: Roles
 - [x] ~~Generation 1 protection from random death by default~~ — Validated in Phase 3: Mortality Engine
@@ -103,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 7 completion*
+*Last updated: 2026-03-25 after Phase 8 completion*
