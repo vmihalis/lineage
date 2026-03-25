@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-03-25T02:28:30.093Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-03-25T08:06:38.960Z"
 progress:
   total_phases: 10
   completed_phases: 7
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mortality changes what a mind produces -- urgency, loss, and the knowledge of ending create different thinking than comfort and infinite time.
-**Current focus:** Phase 07 — mutation-pipeline
+**Current focus:** Phase 08 — inheritance-composer
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
+Phase: 08 (inheritance-composer) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -58,6 +58,8 @@ Plan: Not started
 | Phase 06-transmission-system P02 | 3min | 2 tasks | 5 files |
 | Phase 07-mutation-pipeline P01 | 2min | 1 tasks | 3 files |
 | Phase 07-mutation-pipeline P02 | 3min | 2 tasks | 5 files |
+| Phase 08-inheritance-composer P01 | 3min | 2 tasks | 4 files |
+| Phase 08-inheritance-composer P02 | 3min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -109,6 +111,14 @@ Recent decisions affecting current work:
 - [Phase 07-mutation-pipeline]: mutateTransmission creates new Transmission with nanoid -- original is never mutated (immutable data flow)
 - [Phase 07-mutation-pipeline]: Quote stripping on LLM output via regex to handle models wrapping responses in quotation marks
 - [Phase 07-mutation-pipeline]: Pipeline emits transmission:mutated event after successful mutation for downstream listeners
+- [Phase 08-inheritance-composer]: TransmissionSchema.parse validates disk data integrity on read
+- [Phase 08-inheritance-composer]: ENOENT catch returns empty array for missing generation directories (normal case)
+- [Phase 08-inheritance-composer]: Seed compression prompt uses generation-grouped tokens with [N] format for anchor compatibility
+- [Phase 08-inheritance-composer]: formatRecentLayer uses citizenId.slice(0, 8) for compact citizen identity
+- [Phase 08-inheritance-composer]: Empty inputs consistently return empty strings/arrays (no errors) across all inheritance functions
+- [Phase 08-inheritance-composer]: executeSeedCompression follows exact mutation-executor.ts query() pattern: maxTurns 1, dontAsk, no persist
+- [Phase 08-inheritance-composer]: Generation 1 early return emits event with layerCount 0 before returning null layers
+- [Phase 08-inheritance-composer]: INHERITANCE_RECENT_LABEL exported as const literal type for Phase 9 threshold label matching
 
 ### Pending Todos
 
@@ -122,6 +132,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T02:24:03.350Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-03-25T08:06:38.957Z
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None
