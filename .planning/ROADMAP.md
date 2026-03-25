@@ -96,7 +96,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- TurnOutput schema, handoff formatting, and turn prompt builder with TDD tests
+- [x] 05-01-PLAN.md -- TurnOutput schema, handoff formatting, and turn prompt builder with TDD tests
 - [ ] 05-02-PLAN.md -- TurnRunner sequential execution with Agent SDK, ContextBudget integration, and barrel exports
 
 ### Phase 6: Transmission System

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to plan
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-25T00:44:02.095Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-25T01:17:10.718Z"
 progress:
   total_phases: 10
-  completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 5
+  total_plans: 8
+  completed_plans: 8
 ---
 
 # Project State
@@ -19,11 +19,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mortality changes what a mind produces -- urgency, loss, and the knowledge of ending create different thinking than comfort and infinite time.
-**Current focus:** Phase 04 — roles
+**Current focus:** Phase 05 — turn-based-interaction
 
 ## Current Position
 
-Phase: 5
+Phase: 6
 Plan: Not started
 
 ## Performance Metrics
@@ -52,6 +52,8 @@ Plan: Not started
 | Phase 03-mortality-engine P01 | 5min | 2 tasks | 6 files |
 | Phase 03-mortality-engine P02 | 2min | 2 tasks | 4 files |
 | Phase 04-roles P01 | 3min | 2 tasks | 8 files |
+| Phase 05-turn-based-interaction P01 | 2min | 1 tasks | 3 files |
+| Phase 05-turn-based-interaction P02 | 4min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -81,6 +83,13 @@ Recent decisions affecting current work:
 - [Phase 04-roles]: Role prompts under 2000 chars each for efficient context window usage
 - [Phase 04-roles]: Prompt builder appends shared mortality awareness section to all roles
 - [Phase 04-roles]: citizenName in prompt uses separate nanoid(6), independent from citizen ID
+- [Phase 05-turn-based-interaction]: Handoff text uses structured header format: --- citizenName (role, Turn N) --- for clear visual separation
+- [Phase 05-turn-based-interaction]: First citizen prompt omits PREVIOUS CITIZEN CONTRIBUTIONS section entirely, not empty section
+- [Phase 05-turn-based-interaction]: Pure function formatting (formatHandoff, buildTurnPrompt) with no side effects for testability
+- [Phase 05-turn-based-interaction]: executeCitizenTurn takes turnNumber as explicit parameter for stateless function design
+- [Phase 05-turn-based-interaction]: ContextBudget integration is optional via config.contextBudget? for flexible execution without mortality wiring
+- [Phase 05-turn-based-interaction]: permissionMode forced to dontAsk and persistSession to false, overriding AgentConfig defaults for headless execution
+- [Phase 05-turn-based-interaction]: Agent SDK error subtypes produce placeholder text rather than throwing exceptions for graceful turn sequence continuation
 
 ### Pending Todos
 
@@ -94,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T00:39:59.541Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-25T01:10:07.453Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
