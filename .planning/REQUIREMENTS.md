@@ -18,22 +18,22 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 ### Agent Lifecycle
 
-- [ ] **LIFE-01**: Citizen agent born with assigned role, generation number, and hidden death profile
-- [ ] **LIFE-02**: Context consumption tracked as percentage of max tokens (context-as-age proxy)
-- [ ] **LIFE-03**: ContextBudget abstraction with safety buffers accounting for SDK overhead (10-20% imprecision)
-- [ ] **LIFE-04**: Old age death profile -- context fills gradually, agent can observe decline, time for careful transmission
-- [ ] **LIFE-05**: Accident death profile -- random termination at unpredictable point, no warning, mid-sentence cut
-- [ ] **LIFE-06**: Death profiles assigned hidden at birth via weighted random selection from configured distribution
-- [ ] **LIFE-07**: Generation 1 protected from random death by default (configurable parameter)
+- [x] **LIFE-01**: Citizen agent born with assigned role, generation number, and hidden death profile
+- [x] **LIFE-02**: Context consumption tracked as percentage of max tokens (context-as-age proxy)
+- [x] **LIFE-03**: ContextBudget abstraction with safety buffers accounting for SDK overhead (10-20% imprecision)
+- [x] **LIFE-04**: Old age death profile -- context fills gradually, agent can observe decline, time for careful transmission
+- [x] **LIFE-05**: Accident death profile -- random termination at unpredictable point, no warning, mid-sentence cut
+- [x] **LIFE-06**: Death profiles assigned hidden at birth via weighted random selection from configured distribution
+- [x] **LIFE-07**: Generation 1 protected from random death by default (configurable parameter)
 
 ### Roles
 
-- [ ] **ROLE-01**: Builder role -- system prompt focused on seed problem, generating ideas, attempting solutions
-- [ ] **ROLE-02**: Skeptic role -- system prompt focused on stress-testing, questioning inherited wisdom
-- [ ] **ROLE-03**: Archivist role -- system prompt focused on protecting knowledge, monitoring what's about to be lost
-- [ ] **ROLE-04**: Elder Interpreter role -- system prompt helping younger agents understand inheritance
-- [ ] **ROLE-05**: Observer role -- system prompt for watching, recording, writing history without solving
-- [ ] **ROLE-06**: Role distribution configurable via simulation parameters
+- [x] **ROLE-01**: Builder role -- system prompt focused on seed problem, generating ideas, attempting solutions
+- [x] **ROLE-02**: Skeptic role -- system prompt focused on stress-testing, questioning inherited wisdom
+- [x] **ROLE-03**: Archivist role -- system prompt focused on protecting knowledge, monitoring what's about to be lost
+- [x] **ROLE-04**: Elder Interpreter role -- system prompt helping younger agents understand inheritance
+- [x] **ROLE-05**: Observer role -- system prompt for watching, recording, writing history without solving
+- [x] **ROLE-06**: Role distribution configurable via simulation parameters
 
 ### Interaction
 
@@ -153,19 +153,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUND-04 | Phase 2 | Complete |
 | FOUND-05 | Phase 2 | Complete |
 | FOUND-06 | Phase 2 | Complete |
-| LIFE-01 | Phase 3 | Pending |
-| LIFE-02 | Phase 3 | Pending |
-| LIFE-03 | Phase 3 | Pending |
-| LIFE-04 | Phase 3 | Pending |
-| LIFE-05 | Phase 3 | Pending |
-| LIFE-06 | Phase 3 | Pending |
-| LIFE-07 | Phase 3 | Pending |
-| ROLE-01 | Phase 4 | Pending |
-| ROLE-02 | Phase 4 | Pending |
-| ROLE-03 | Phase 4 | Pending |
-| ROLE-04 | Phase 4 | Pending |
-| ROLE-05 | Phase 4 | Pending |
-| ROLE-06 | Phase 4 | Pending |
+| LIFE-01 | Phase 3 | Complete |
+| LIFE-02 | Phase 3 | Complete |
+| LIFE-03 | Phase 3 | Complete |
+| LIFE-04 | Phase 3 | Complete |
+| LIFE-05 | Phase 3 | Complete |
+| LIFE-06 | Phase 3 | Complete |
+| LIFE-07 | Phase 3 | Complete |
+| ROLE-01 | Phase 4 | Complete |
+| ROLE-02 | Phase 4 | Complete |
+| ROLE-03 | Phase 4 | Complete |
+| ROLE-04 | Phase 4 | Complete |
+| ROLE-05 | Phase 4 | Complete |
+| ROLE-06 | Phase 4 | Complete |
 | INTR-01 | Phase 5 | Pending |
 | INTR-02 | Phase 5 | Pending |
 | INTR-03 | Phase 5 | Pending |
