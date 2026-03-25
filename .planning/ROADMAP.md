@@ -122,7 +122,11 @@ Plans:
   2. Large mutation produces a transmission where a core claim inverts meaning (warning becomes instruction)
   3. Mutations are applied probabilistically -- running the same simulation with mutation rate 0.0 produces no mutations
   4. Large mutation probability is configurable independently from the base mutation rate
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md -- TDD pure functions: mutation prompts, decider, token selection, content reassembly
+- [ ] 07-02-PLAN.md -- Mutation executor (Agent SDK call), pipeline orchestrator, and barrel exports
 
 ### Phase 8: Inheritance Composer
 **Goal**: Next-generation citizens receive staged knowledge from their predecessors at the right moments in their lifespan
@@ -170,7 +174,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Roles | 0/1 | Planning complete | - |
 | 5. Turn-Based Interaction | 0/2 | Planning complete | - |
 | 6. Transmission System | 0/2 | Planning complete | - |
-| 7. Mutation Pipeline | 0/0 | Not started | - |
+| 7. Mutation Pipeline | 0/2 | Planning complete | - |
 | 8. Inheritance Composer | 0/0 | Not started | - |
 | 9. Generation Manager | 0/0 | Not started | - |
 | 10. Event Stream and Terminal Output | 0/0 | Not started | - |
