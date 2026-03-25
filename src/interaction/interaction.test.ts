@@ -1,7 +1,18 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock the Agent SDK before any imports that use it
+const mockQuery = vi.fn();
+vi.mock('@anthropic-ai/claude-agent-sdk', () => ({
+  query: (...args: unknown[]) => mockQuery(...args),
+}));
+
 import { TurnOutputSchema } from './turn-output.js';
 import type { TurnOutput } from './turn-output.js';
 import { formatHandoff, buildTurnPrompt } from './handoff.js';
+import { executeCitizenTurn, runTurns } from './turn-runner.js';
+import type { TurnRunnerConfig } from './turn-runner.js';
+import { ContextBudget } from '../mortality/index.js';
+import { CitizenConfigSchema } from '../schemas/index.js';
 
 function makeTurnOutput(overrides: Partial<TurnOutput> = {}): TurnOutput {
   return TurnOutputSchema.parse({
@@ -178,5 +189,271 @@ describe('buildTurnPrompt', () => {
     expect(result).toContain('citizen-gen1-beta');
     expect(result).toContain('But who will maintain it?');
     expect(result).toContain('citizen 3');
+  });
+});
+
+// --- TurnRunner Tests (Plan 02) ---
+
+function makeCitizen(overrides: Record<string, unknown> = {}) {
+  const now = new Date().toISOString();
+  return CitizenConfigSchema.parse({
+    id: 'citizen-001',
+    name: 'citizen-gen1-alpha',
+    type: 'lineage-citizen',
+    systemPrompt: 'You are a builder citizen.',
+    role: 'builder',
+    generationNumber: 1,
+    deathProfile: 'old-age',
+    contextBudget: 0,
+    birthTimestamp: now,
+    createdAt: now,
+    updatedAt: now,
+    transmissions: [],
+    ...overrides,
+  });
+}
+
+function createMockQueryGenerator(resultText: string, inputTokens = 100, outputTokens = 200) {
+  return (async function* () {
+    yield {
+      type: 'assistant' as const,
+      message: { content: [{ type: 'text', text: resultText }] },
+      parent_tool_use_id: null,
+      uuid: 'test-uuid',
+      session_id: 'test-session',
+    };
+    yield {
+      type: 'result' as const,
+      subtype: 'success' as const,
+      result: resultText,
+      is_error: false,
+      num_turns: 1,
+      duration_ms: 100,
+      duration_api_ms: 50,
+      total_cost_usd: 0.001,
+      usage: { input_tokens: inputTokens, output_tokens: outputTokens },
+      modelUsage: {},
+      permission_denials: [],
+      stop_reason: 'end_turn',
+      uuid: 'test-uuid',
+      session_id: 'test-session',
+    };
+  })();
+}
+
+function createErrorQueryGenerator(errorSubtype: string) {
+  return (async function* () {
+    yield {
+      type: 'result' as const,
+      subtype: errorSubtype as 'error',
+      result: '',
+      is_error: true,
+      num_turns: 0,
+      duration_ms: 50,
+      duration_api_ms: 25,
+      total_cost_usd: 0,
+      usage: { input_tokens: 10, output_tokens: 0 },
+      modelUsage: {},
+      permission_denials: [],
+      stop_reason: 'error',
+      uuid: 'test-uuid',
+      session_id: 'test-session',
+    };
+  })();
+}
+
+describe('executeCitizenTurn', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('calls query() and returns TurnOutput with citizenId, name, role, turnNumber, output, and usage', async () => {
+    const citizen = makeCitizen();
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('I believe we should build a library.'));
+
+    const result = await executeCitizenTurn(citizen, 'What is worth preserving?', 1);
+
+    expect(result.citizenId).toBe('citizen-001');
+    expect(result.citizenName).toBe('citizen-gen1-alpha');
+    expect(result.role).toBe('builder');
+    expect(result.turnNumber).toBe(1);
+    expect(result.output).toBe('I believe we should build a library.');
+    expect(result.usage.inputTokens).toBe(100);
+    expect(result.usage.outputTokens).toBe(200);
+    expect(result.timestamp).toBeDefined();
+  });
+
+  it('passes citizen systemPrompt, maxTurns, model, permissionMode dontAsk, and persistSession false to query()', async () => {
+    const citizen = makeCitizen({
+      systemPrompt: 'You are a skeptic.',
+      maxTurns: 3,
+    });
+    mockQuery.mockReturnValueOnce(createMockQueryGenerator('Skeptical response'));
+
+    await executeCitizenTurn(citizen, 'Test prompt', 2);
+
+    expect(mockQuery).toHaveBeenCalledTimes(1);
+    const callArgs = mockQuery.mock.calls[0][0];
+    expect(callArgs.prompt).toBe('Test prompt');
+    expect(callArgs.options.systemPrompt).toBe('You are a skeptic.');
+    expect(callArgs.options.maxTurns).toBe(3);
+    expect(callArgs.options.permissionMode).toBe('dontAsk');
+    expect(callArgs.options.persistSession).toBe(false);
+  });
+
+  it('handles error result (subtype !== success) by returning output with Agent error text', async () => {
+    const citizen = makeCitizen();
+    mockQuery.mockReturnValueOnce(createErrorQueryGenerator('max_turns_reached'));
+
+    const result = await executeCitizenTurn(citizen, 'Test prompt', 1);
+
+    expect(result.output).toContain('[Agent error: max_turns_reached]');
+    expect(result.usage.inputTokens).toBe(10);
+    expect(result.usage.outputTokens).toBe(0);
+  });
+});
+
+describe('runTurns', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('executes citizens sequentially (N calls for N citizens, each after previous completes)', async () => {
+    const citizen1 = makeCitizen({ id: 'cit-1', name: 'citizen-gen1-alpha', role: 'builder' });
+    const citizen2 = makeCitizen({ id: 'cit-2', name: 'citizen-gen1-beta', role: 'skeptic' });
+    const citizen3 = makeCitizen({ id: 'cit-3', name: 'citizen-gen1-gamma', role: 'archivist' });
+
+    // Each mock includes the prompt in its response so we can verify threading
+    mockQuery
+      .mockReturnValueOnce(createMockQueryGenerator('Response from citizen 1', 100, 150))
+      .mockReturnValueOnce(createMockQueryGenerator('Response from citizen 2', 200, 250))
+      .mockReturnValueOnce(createMockQueryGenerator('Response from citizen 3', 300, 350));
+
+    const config: TurnRunnerConfig = {
+      seedProblem: 'What is worth preserving?',
+      citizens: [citizen1, citizen2, citizen3],
+    };
+
+    const result = await runTurns(config);
+
+    // query() called exactly 3 times
+    expect(mockQuery).toHaveBeenCalledTimes(3);
+    // 3 turns returned
+    expect(result.turns).toHaveLength(3);
+  });
+
+  it('passes seed problem only to first citizen (no handoff) and seed + handoff to subsequent citizens', async () => {
+    const citizen1 = makeCitizen({ id: 'cit-1', name: 'citizen-gen1-alpha', role: 'builder' });
+    const citizen2 = makeCitizen({ id: 'cit-2', name: 'citizen-gen1-beta', role: 'skeptic' });
+
+    mockQuery
+      .mockReturnValueOnce(createMockQueryGenerator('First citizen output', 100, 100))
+      .mockReturnValueOnce(createMockQueryGenerator('Second citizen output', 200, 200));
+
+    const config: TurnRunnerConfig = {
+      seedProblem: 'What is worth preserving?',
+      citizens: [citizen1, citizen2],
+    };
+
+    await runTurns(config);
+
+    // First citizen prompt should NOT contain PREVIOUS CITIZEN CONTRIBUTIONS
+    const firstPrompt = mockQuery.mock.calls[0][0].prompt;
+    expect(firstPrompt).toContain('What is worth preserving?');
+    expect(firstPrompt).not.toContain('PREVIOUS CITIZEN CONTRIBUTIONS');
+    expect(firstPrompt).toContain('first citizen');
+
+    // Second citizen prompt SHOULD contain handoff from first citizen
+    const secondPrompt = mockQuery.mock.calls[1][0].prompt;
+    expect(secondPrompt).toContain('What is worth preserving?');
+    expect(secondPrompt).toContain('PREVIOUS CITIZEN CONTRIBUTIONS');
+    expect(secondPrompt).toContain('First citizen output');
+  });
+
+  it('provides increasing handoff context (citizen 2 sees 1, citizen 3 sees 1+2)', async () => {
+    const citizen1 = makeCitizen({ id: 'cit-1', name: 'citizen-gen1-alpha', role: 'builder' });
+    const citizen2 = makeCitizen({ id: 'cit-2', name: 'citizen-gen1-beta', role: 'skeptic' });
+    const citizen3 = makeCitizen({ id: 'cit-3', name: 'citizen-gen1-gamma', role: 'archivist' });
+
+    mockQuery
+      .mockReturnValueOnce(createMockQueryGenerator('Alpha output', 100, 100))
+      .mockReturnValueOnce(createMockQueryGenerator('Beta output', 200, 200))
+      .mockReturnValueOnce(createMockQueryGenerator('Gamma output', 300, 300));
+
+    await runTurns({
+      seedProblem: 'Test seed',
+      citizens: [citizen1, citizen2, citizen3],
+    });
+
+    // Citizen 3's prompt should contain both citizen 1 and citizen 2 outputs
+    const thirdPrompt = mockQuery.mock.calls[2][0].prompt;
+    expect(thirdPrompt).toContain('Alpha output');
+    expect(thirdPrompt).toContain('Beta output');
+    expect(thirdPrompt).toContain('citizen-gen1-alpha');
+    expect(thirdPrompt).toContain('citizen-gen1-beta');
+  });
+
+  it('turn numbers increment from 1 to N across the returned turns array', async () => {
+    const citizen1 = makeCitizen({ id: 'cit-1', name: 'alpha', role: 'builder' });
+    const citizen2 = makeCitizen({ id: 'cit-2', name: 'beta', role: 'skeptic' });
+    const citizen3 = makeCitizen({ id: 'cit-3', name: 'gamma', role: 'archivist' });
+
+    mockQuery
+      .mockReturnValueOnce(createMockQueryGenerator('Out 1', 100, 100))
+      .mockReturnValueOnce(createMockQueryGenerator('Out 2', 100, 100))
+      .mockReturnValueOnce(createMockQueryGenerator('Out 3', 100, 100));
+
+    const result = await runTurns({
+      seedProblem: 'Test',
+      citizens: [citizen1, citizen2, citizen3],
+    });
+
+    expect(result.turns[0].turnNumber).toBe(1);
+    expect(result.turns[1].turnNumber).toBe(2);
+    expect(result.turns[2].turnNumber).toBe(3);
+  });
+
+  it('returns TurnResult with accumulated totalTokens', async () => {
+    const citizen1 = makeCitizen({ id: 'cit-1', name: 'alpha', role: 'builder' });
+    const citizen2 = makeCitizen({ id: 'cit-2', name: 'beta', role: 'skeptic' });
+
+    mockQuery
+      .mockReturnValueOnce(createMockQueryGenerator('Out 1', 100, 150))
+      .mockReturnValueOnce(createMockQueryGenerator('Out 2', 200, 250));
+
+    const result = await runTurns({
+      seedProblem: 'Test',
+      citizens: [citizen1, citizen2],
+    });
+
+    expect(result.totalTokens.input).toBe(300);   // 100 + 200
+    expect(result.totalTokens.output).toBe(400);   // 150 + 250
+  });
+
+  it('updates provided ContextBudget with each citizen usage after their turn', async () => {
+    const citizen1 = makeCitizen({ id: 'cit-1', name: 'alpha', role: 'builder' });
+    const citizen2 = makeCitizen({ id: 'cit-2', name: 'beta', role: 'skeptic' });
+
+    mockQuery
+      .mockReturnValueOnce(createMockQueryGenerator('Out 1', 1000, 2000))
+      .mockReturnValueOnce(createMockQueryGenerator('Out 2', 3000, 4000));
+
+    const budget = new ContextBudget({
+      contextWindow: 200000,
+      safetyBuffer: 0.2,
+      thresholds: [],
+    });
+
+    await runTurns({
+      seedProblem: 'Test',
+      citizens: [citizen1, citizen2],
+      contextBudget: budget,
+    });
+
+    // Budget should reflect total consumed tokens: (1000+2000) + (3000+4000) = 10000
+    // Effective capacity = 200000 * 0.8 = 160000
+    // Percentage = 10000 / 160000 = 0.0625
+    expect(budget.percentage).toBeCloseTo(0.0625, 4);
+    expect(budget.remainingTokens).toBe(160000 - 10000);
   });
 });
