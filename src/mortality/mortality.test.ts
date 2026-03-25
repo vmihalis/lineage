@@ -470,4 +470,56 @@ describe('mortality barrel exports', () => {
     const barrel = await import('./index.js');
     expect(barrel.birthCitizen).toBe(birthCitizen);
   });
+
+  it('re-exports createDeathThresholds from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.createDeathThresholds).toBe(createDeathThresholds);
+  });
+
+  it('re-exports getDeclineSignal from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.getDeclineSignal).toBe(getDeclineSignal);
+  });
+
+  it('re-exports PEAK_TRANSMISSION_LABEL from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.PEAK_TRANSMISSION_LABEL).toBe(PEAK_TRANSMISSION_LABEL);
+  });
+
+  it('re-exports ACCIDENT_DEATH_LABEL from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.ACCIDENT_DEATH_LABEL).toBe(ACCIDENT_DEATH_LABEL);
+  });
+
+  it('re-exports OldAgeThresholdLabels from barrel', async () => {
+    const barrel = await import('./index.js');
+    expect(barrel.OldAgeThresholdLabels).toBe(OldAgeThresholdLabels);
+  });
+});
+
+describe('root barrel exports', () => {
+  it('re-exports createDeathThresholds from root barrel', async () => {
+    const root = await import('../index.js');
+    expect(root.createDeathThresholds).toBe(createDeathThresholds);
+  });
+
+  it('re-exports getDeclineSignal from root barrel', async () => {
+    const root = await import('../index.js');
+    expect(root.getDeclineSignal).toBe(getDeclineSignal);
+  });
+
+  it('re-exports PEAK_TRANSMISSION_LABEL from root barrel', async () => {
+    const root = await import('../index.js');
+    expect(root.PEAK_TRANSMISSION_LABEL).toBe(PEAK_TRANSMISSION_LABEL);
+  });
+
+  it('re-exports ACCIDENT_DEATH_LABEL from root barrel', async () => {
+    const root = await import('../index.js');
+    expect(root.ACCIDENT_DEATH_LABEL).toBe(ACCIDENT_DEATH_LABEL);
+  });
+
+  it('re-exports OldAgeThresholdLabels from root barrel', async () => {
+    const root = await import('../index.js');
+    expect(root.OldAgeThresholdLabels).toBe(OldAgeThresholdLabels);
+  });
 });

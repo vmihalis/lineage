@@ -7,5 +7,5 @@ export { LineageStateManager } from './state/index.js';
 export { loadConfig } from './config/index.js';
 export type { CliOptions } from './config/index.js';
 export { DEFAULT_SIMULATION_PARAMETERS } from './config/index.js';
-export { ContextBudget, assignDeathProfile, calculateAccidentPoint, birthCitizen } from './mortality/index.js';
+export { ContextBudget, assignDeathProfile, calculateAccidentPoint, birthCitizen, createDeathThresholds, getDeclineSignal, PEAK_TRANSMISSION_LABEL, ACCIDENT_DEATH_LABEL, OldAgeThresholdLabels } from './mortality/index.js';
 export type { ContextBudgetConfig, ContextThreshold } from './mortality/index.js';
