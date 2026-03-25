@@ -211,32 +211,13 @@ describe('runGeneration', () => {
     });
 
     it('calls executePeakTransmission once per citizen with buildPeakTransmissionPrompt output', async () => {
-      setupDefaultMocks();
-      const params = makeMockParams();
-
-      // Re-setup to control mocks precisely
-      vi.clearAllMocks();
-      const cit1 = makeMockCitizen({ id: 'cit-1', role: 'builder' });
-      const cit2 = makeMockCitizen({ id: 'cit-2', role: 'skeptic' });
-      mockAssignRoles.mockReturnValue(['builder', 'skeptic']);
-      mockBirthCitizen.mockReturnValueOnce(cit1).mockReturnValueOnce(cit2);
-      mockRunTurns.mockResolvedValue({ turns: [], totalTokens: { input: 0, output: 0 } });
-      mockBuildPeakTransmissionPrompt.mockReturnValueOnce('peak-1').mockReturnValueOnce('peak-2');
-      const tx1 = makeMockTransmission('cit-1', 1, 'tx-1');
-      const tx2 = makeMockTransmission('cit-2', 1, 'tx-2');
-      mockExecutePeakTransmission
-        .mockResolvedValueOnce({ transmission: tx1, usage: { inputTokens: 50, outputTokens: 100 } })
-        .mockResolvedValueOnce({ transmission: tx2, usage: { inputTokens: 50, outputTokens: 100 } });
-      mockMutateTransmission
-        .mockResolvedValueOnce({ transmission: tx1, wasMutated: false })
-        .mockResolvedValueOnce({ transmission: tx2, wasMutated: false });
-      mockWriteTransmission.mockResolvedValue('/output/path.json');
+      const { params, cit1, cit2 } = setupDefaultMocks();
 
       await runGeneration(1, params, null, null);
 
       expect(mockExecutePeakTransmission).toHaveBeenCalledTimes(2);
-      expect(mockExecutePeakTransmission).toHaveBeenCalledWith(cit1, 'peak-1');
-      expect(mockExecutePeakTransmission).toHaveBeenCalledWith(cit2, 'peak-2');
+      expect(mockExecutePeakTransmission).toHaveBeenCalledWith(cit1, 'peak prompt for cit-1');
+      expect(mockExecutePeakTransmission).toHaveBeenCalledWith(cit2, 'peak prompt for cit-2');
     });
 
     it('calls writeTransmission once per transmission result (after mutation)', async () => {
