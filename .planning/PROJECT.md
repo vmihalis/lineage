@@ -34,6 +34,8 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] Mutation pipeline with small drift and large inversion mutations applied probabilistically via Agent SDK — Validated in Phase 7: Mutation Pipeline
 - [x] Inheritance composer with staged delivery (seed at birth, recent at maturity) with LLM-powered seed compression — Validated in Phase 8: Inheritance Composer
 - [x] Generation manager orchestrating cohort lifecycle with state machine (INIT→BIRTHING→INTERACTING→DYING→TRANSMITTING→COMPLETE) — Validated in Phase 9: Generation Manager
+- [x] Real-time event stream output with color-coded terminal formatting — Validated in Phase 10: Event Stream and Terminal Output
+- [x] Generation summary table at each generation boundary — Validated in Phase 10: Event Stream and Terminal Output
 
 ### Active
 
@@ -48,8 +50,8 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] ~~5 agent roles (Builder, Skeptic, Archivist, Elder Interpreter, Observer) as config-driven system prompts~~ — Validated in Phase 4: Roles
 - [x] ~~Generation 1 protection from random death by default~~ — Validated in Phase 3: Mortality Engine
 - [ ] Civilization metrics computation (knowledge survival rate, seed problem progress, corruption level, generational diversity)
-- [ ] Real-time event stream output (births, deaths, transmissions, mutations)
-- [ ] Generation summary output at each generation boundary
+- [x] ~~Real-time event stream output (births, deaths, transmissions, mutations)~~ — Validated in Phase 10: Event Stream and Terminal Output (EventRenderer subscribes to lineageBus, chalk-colored formatters, ora spinner lifecycle)
+- [x] ~~Generation summary output at each generation boundary~~ — Validated in Phase 10: Event Stream and Terminal Output (cli-table3 table with Citizen/Role/Death/Transmitted/Mutated columns)
 
 ### Out of Scope
 
@@ -105,4 +107,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after Phase 9 completion*
+*Last updated: 2026-03-25 after Phase 10 completion — all 10 phases complete*
