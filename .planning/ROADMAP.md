@@ -201,6 +201,8 @@ Plans:
   2. composeInheritance reads recentLayerThreshold from config and uses it to control recent layer delivery
   3. Changing peakTransmissionWindow or recentLayerThreshold in config produces observable runtime behavior change
 
+**Plans:** 1 plan
+
 Plans:
 - [ ] 12-01-PLAN.md -- Replace hardcoded values with config-driven parameters
 
