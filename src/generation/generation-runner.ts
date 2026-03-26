@@ -141,22 +141,25 @@ export async function runGeneration(
     }
   }
 
-  // DYING -- surviving citizens who haven't yet transmitted
+  // DYING -- surviving citizens produce peak transmission (if not already collected) and die
   generation.phase = 'DYING';
   for (const mortality of citizenMortality) {
-    if (mortality.isDead || mortality.peakTransmissionCollected) continue;
+    if (mortality.isDead) continue; // Accident citizens already dead
 
-    // Use actual budget percentage, not hardcoded 0.45 (LIFE-02, LIFE-03)
-    const currentPct = budget.percentage;
-    let peakPrompt = buildPeakTransmissionPrompt(mortality.citizen, currentPct);
+    if (!mortality.peakTransmissionCollected) {
+      // Use actual budget percentage, not hardcoded 0.45 (LIFE-02, LIFE-03)
+      const currentPct = budget.percentage;
+      let peakPrompt = buildPeakTransmissionPrompt(mortality.citizen, currentPct);
 
-    // LIFE-04: Prepend accumulated decline signals for old-age citizens
-    if (mortality.declineSignals.length > 0) {
-      peakPrompt = mortality.declineSignals.join('\n\n') + '\n\n' + peakPrompt;
+      // LIFE-04: Prepend accumulated decline signals for old-age citizens
+      if (mortality.declineSignals.length > 0) {
+        peakPrompt = mortality.declineSignals.join('\n\n') + '\n\n' + peakPrompt;
+      }
+
+      const { transmission } = await executePeakTransmission(mortality.citizen, peakPrompt);
+      collectedTransmissions.push(transmission);
     }
 
-    const { transmission } = await executePeakTransmission(mortality.citizen, peakPrompt);
-    collectedTransmissions.push(transmission);
     lineageBus.emit('citizen:died', mortality.citizen.id, mortality.citizen.deathProfile, mortality.citizen.generationNumber);
   }
 
