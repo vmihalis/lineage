@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 7: Mutation Pipeline** - LLM-powered small drift and large inversion mutations applied probabilistically
 - [ ] **Phase 8: Inheritance Composer** - Staged knowledge delivery (seed at birth, recent at maturity) for next generation
 - [ ] **Phase 9: Generation Manager** - Full lifecycle orchestration as state machine across multiple generations
-- [ ] **Phase 10: Event Stream and Terminal Output** - Real-time color-coded event stream and generation summaries for demo
+- [x] **Phase 10: Event Stream and Terminal Output** - Real-time color-coded event stream and generation summaries for demo (completed 2026-03-26)
 
 ## Phase Details
 
@@ -166,7 +166,7 @@ Plans:
   1. Typed events fire for all major lifecycle moments: citizen:born, citizen:died, citizen:peak-transmission, generation:started, generation:ended, transmission:mutated, inheritance:composed
   2. Terminal output is color-coded and streams in real-time (births, deaths, transmissions, mutations are visually distinguishable)
   3. A generation summary is displayed at each generation boundary showing who lived, who died, what was transmitted, and what mutated
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 **UI hint**: yes
 
 Plans:
@@ -189,4 +189,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Mutation Pipeline | 1/2 | In Progress|  |
 | 8. Inheritance Composer | 0/2 | Planning complete | - |
 | 9. Generation Manager | 0/2 | Planned    |  |
-| 10. Event Stream and Terminal Output | 1/2 | In Progress|  |
+| 10. Event Stream and Terminal Output | 1/2 | Complete    | 2026-03-26 |
