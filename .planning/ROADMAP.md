@@ -186,6 +186,7 @@ Plans:
   3. Old-age citizens receive decline signals via getDeclineSignal() injected into their conversation context
   4. Accident-profile citizens are terminated early when their threshold is reached, cutting output mid-thought
   5. All existing 346 tests continue to pass (no regressions)
+**Plans:** 1 plan
 
 Plans:
 - [ ] 11-01-PLAN.md -- Wire ContextBudget, death thresholds, and decline signals into generation-runner
@@ -220,5 +221,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 8. Inheritance Composer | 0/2 | Planning complete | - |
 | 9. Generation Manager | 0/2 | Planned    |  |
 | 10. Event Stream and Terminal Output | 1/2 | Complete    | 2026-03-26 |
-| 11. Wire Mortality Engine into Generation Runner | 0/1 | Planned | - |
+| 11. Wire Mortality Engine into Generation Runner | 0/1 | Planning complete | - |
 | 12. Wire Config Parameters to Runtime Call Sites | 0/1 | Planned | - |
