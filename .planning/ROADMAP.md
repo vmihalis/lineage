@@ -170,7 +170,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 10-01-PLAN.md -- Install display deps, pure event formatters, generation summary builder, and unit tests
+- [x] 10-01-PLAN.md -- Install display deps, pure event formatters, generation summary builder, and unit tests
 - [ ] 10-02-PLAN.md -- EventRenderer class, CLI wiring, integration tests, and visual verification
 
 ## Progress
@@ -189,4 +189,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Mutation Pipeline | 1/2 | In Progress|  |
 | 8. Inheritance Composer | 0/2 | Planning complete | - |
 | 9. Generation Manager | 0/2 | Planned    |  |
-| 10. Event Stream and Terminal Output | 0/2 | Planning complete | - |
+| 10. Event Stream and Terminal Output | 1/2 | In Progress | - |

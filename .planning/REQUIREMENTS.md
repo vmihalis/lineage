@@ -78,8 +78,8 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 ### Events & Output
 
 - [ ] **EVNT-01**: Typed events emitted for: citizen:born, citizen:died, citizen:peak-transmission, generation:started, generation:ended, transmission:mutated, inheritance:composed
-- [ ] **EVNT-02**: Real-time event stream to terminal with color-coded formatting (births, deaths, transmissions, mutations)
-- [ ] **EVNT-03**: Generation summary displayed at each generation boundary (who lived, who died, what was transmitted, what mutated)
+- [x] **EVNT-02**: Real-time event stream to terminal with color-coded formatting (births, deaths, transmissions, mutations)
+- [x] **EVNT-03**: Generation summary displayed at each generation boundary (who lived, who died, what was transmitted, what mutated)
 
 ## v2 Requirements
 
@@ -189,8 +189,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONF-03 | Phase 2 | Complete |
 | CONF-04 | Phase 2 | Complete |
 | EVNT-01 | Phase 10 | Pending |
-| EVNT-02 | Phase 10 | Pending |
-| EVNT-03 | Phase 10 | Pending |
+| EVNT-02 | Phase 10 | Complete |
+| EVNT-03 | Phase 10 | Complete |
 
 **Coverage:**
 - v1 requirements: 44 total
