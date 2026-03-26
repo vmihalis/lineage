@@ -20,3 +20,5 @@ export type { MutationResult, MutationType, MutationDecision } from './mutation/
 export { readGenerationTransmissions, readAllPriorTransmissions, SEED_COMPRESSION_SYSTEM_PROMPT, buildSeedCompressionPrompt, formatSeedLayer, formatRecentLayer, executeSeedCompression, composeInheritance, INHERITANCE_RECENT_LABEL } from './inheritance/index.js';
 export type { InheritancePackage } from './inheritance/index.js';
 export { runGeneration, runSimulation } from './generation/index.js';
+export { formatBirth, formatDeath, formatTransmission, formatMutation, formatGenerationStart, formatGenerationEnd, formatInheritance, formatSimulationStart, formatSimulationEnd, COLORS, buildGenerationSummary, createGenerationDisplayState } from './display/index.js';
+export type { GenerationDisplayState, DisplayCitizen } from './display/index.js';
