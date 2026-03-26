@@ -95,6 +95,7 @@ vi.mock('../mutation/mutation-pipeline.js', () => ({
 
 vi.mock('../inheritance/inheritance-composer.js', () => ({
   composeInheritance: (...args: unknown[]) => mockComposeInheritance(...args),
+  INHERITANCE_RECENT_LABEL: 'inheritance-recent',
 }));
 
 vi.mock('../state/index.js', () => ({
@@ -839,6 +840,196 @@ describe('runGeneration', () => {
     });
   });
 });
+
+  // Config-driven parameter wiring (TRAN-01, INHR-03)
+  describe('config-driven parameter wiring (TRAN-01, INHR-03)', () => {
+    // TRAN-01: peakTransmissionWindow.max passed to buildPeakTransmissionPrompt
+    it('passes peakTransmissionWindow object to buildPeakTransmissionPrompt as third argument (TRAN-01)', async () => {
+      vi.clearAllMocks();
+      mockStateManagerWrite.mockResolvedValue(undefined);
+
+      const params = makeMockParams({
+        generationSize: 1,
+        peakTransmissionWindow: { min: 0.3, max: 0.7 },
+      });
+      mockAssignRoles.mockReturnValue(['builder']);
+      const cit = makeMockCitizen({ id: 'cit-peak-w', role: 'builder' });
+      mockBirthCitizen.mockReturnValueOnce(cit);
+
+      mortalityState.budgetPercentage = 0.45;
+      mockCreateDeathThresholds.mockReturnValue([
+        { percentage: 0.3, label: 'peak-transmission' },
+      ]);
+      mockGetDeclineSignal.mockReturnValue('');
+
+      mockExecuteCitizenTurn.mockResolvedValueOnce(makeMockTurnOutput('cit-peak-w', 1));
+      mockBuildTurnPrompt.mockReturnValue('mock turn prompt');
+      mockBuildPeakTransmissionPrompt.mockReturnValue('peak prompt');
+
+      const tx = makeMockTransmission('cit-peak-w', 1, 'tx-peak-w');
+      mockExecutePeakTransmission.mockResolvedValueOnce({ transmission: tx, usage: { inputTokens: 50, outputTokens: 100 } });
+      mockMutateTransmission.mockResolvedValueOnce({ transmission: tx, wasMutated: false });
+      mockWriteTransmission.mockResolvedValue('/output/path.json');
+
+      await runGeneration(1, params, null, null);
+
+      // buildPeakTransmissionPrompt should receive the peakTransmissionWindow as third argument
+      expect(mockBuildPeakTransmissionPrompt).toHaveBeenCalledWith(
+        cit,
+        0.45,
+        { min: 0.3, max: 0.7 },
+      );
+    });
+
+    // INHR-03: recentLayerThreshold delays recent layer delivery
+    it('does NOT include recent layer in prompt when budget below recentLayerThreshold (INHR-03)', async () => {
+      vi.clearAllMocks();
+      mockStateManagerWrite.mockResolvedValue(undefined);
+
+      const params = makeMockParams({
+        generationSize: 1,
+        inheritanceStagingRates: { seedLayerAtBirth: true, recentLayerThreshold: 0.25 },
+      });
+      mockAssignRoles.mockReturnValue(['builder']);
+      const cit = makeMockCitizen({ id: 'cit-recent-lo', role: 'builder' });
+      mockBirthCitizen.mockReturnValueOnce(cit);
+
+      // Budget at 0.10 -- below recentLayerThreshold of 0.25
+      mortalityState.budgetPercentage = 0.10;
+      mockCreateDeathThresholds.mockReturnValue([
+        { percentage: 0.4, label: 'peak-transmission' },
+      ]);
+      mockGetDeclineSignal.mockReturnValue('');
+
+      mockExecuteCitizenTurn.mockResolvedValueOnce(makeMockTurnOutput('cit-recent-lo', 1));
+      mockBuildTurnPrompt.mockReturnValue('mock turn prompt');
+      mockBuildPeakTransmissionPrompt.mockReturnValue('peak prompt');
+
+      const tx = makeMockTransmission('cit-recent-lo', 1, 'tx-lo');
+      mockExecutePeakTransmission.mockResolvedValueOnce({ transmission: tx, usage: { inputTokens: 50, outputTokens: 100 } });
+      mockMutateTransmission.mockResolvedValueOnce({ transmission: tx, wasMutated: false });
+      mockWriteTransmission.mockResolvedValue('/output/path.json');
+
+      await runGeneration(2, params, 'seed layer', 'INHERITANCE FROM GEN 1: recent');
+
+      // buildTurnPrompt first call's seedProblem arg should NOT contain the recent layer
+      const seedArg = mockBuildTurnPrompt.mock.calls[0][0];
+      expect(seedArg).not.toContain('INHERITANCE FROM GEN 1');
+      expect(seedArg).toContain('seed layer');
+      expect(seedArg).toContain('What is worth preserving?');
+    });
+
+    it('includes recent layer in prompt when budget crosses recentLayerThreshold (INHR-03)', async () => {
+      vi.clearAllMocks();
+      mockStateManagerWrite.mockResolvedValue(undefined);
+
+      const params = makeMockParams({
+        generationSize: 2,
+        inheritanceStagingRates: { seedLayerAtBirth: true, recentLayerThreshold: 0.25 },
+      });
+      mockAssignRoles.mockReturnValue(['builder', 'skeptic']);
+      const cit1 = makeMockCitizen({ id: 'cit-r1', role: 'builder' });
+      const cit2 = makeMockCitizen({ id: 'cit-r2', role: 'skeptic' });
+      mockBirthCitizen.mockReturnValueOnce(cit1).mockReturnValueOnce(cit2);
+
+      // Budget at 0.45 -- above recentLayerThreshold of 0.25
+      mortalityState.budgetPercentage = 0.45;
+      mockCreateDeathThresholds.mockReturnValue([
+        { percentage: 0.4, label: 'peak-transmission' },
+      ]);
+      mockGetDeclineSignal.mockReturnValue('');
+
+      mockExecuteCitizenTurn
+        .mockResolvedValueOnce(makeMockTurnOutput('cit-r1', 1))
+        .mockResolvedValueOnce(makeMockTurnOutput('cit-r2', 2));
+      mockBuildTurnPrompt.mockReturnValue('mock turn prompt');
+      mockBuildPeakTransmissionPrompt.mockReturnValue('peak prompt');
+
+      const tx1 = makeMockTransmission('cit-r1', 1, 'tx-r1');
+      const tx2 = makeMockTransmission('cit-r2', 1, 'tx-r2');
+      mockExecutePeakTransmission
+        .mockResolvedValueOnce({ transmission: tx1, usage: { inputTokens: 50, outputTokens: 100 } })
+        .mockResolvedValueOnce({ transmission: tx2, usage: { inputTokens: 50, outputTokens: 100 } });
+      mockMutateTransmission
+        .mockResolvedValueOnce({ transmission: tx1, wasMutated: false })
+        .mockResolvedValueOnce({ transmission: tx2, wasMutated: false });
+      mockWriteTransmission.mockResolvedValue('/output/path.json');
+
+      await runGeneration(2, params, 'seed layer', 'INHERITANCE FROM GEN 1: recent');
+
+      // After first citizen crosses the threshold (0.45 >= 0.25), second citizen should get recent layer
+      // Both citizens should get it since the threshold fires on first citizen's turn
+      const secondCallSeedArg = mockBuildTurnPrompt.mock.calls[1][0];
+      expect(secondCallSeedArg).toContain('INHERITANCE FROM GEN 1');
+    });
+
+    it('does not add INHERITANCE_RECENT_LABEL threshold when recentLayer is null (INHR-03)', async () => {
+      vi.clearAllMocks();
+      mockStateManagerWrite.mockResolvedValue(undefined);
+
+      const params = makeMockParams({ generationSize: 1 });
+      mockAssignRoles.mockReturnValue(['builder']);
+      const cit = makeMockCitizen({ id: 'cit-nolayer', role: 'builder' });
+      mockBirthCitizen.mockReturnValueOnce(cit);
+
+      mortalityState.budgetPercentage = 0.45;
+      mockCreateDeathThresholds.mockReturnValue([
+        { percentage: 0.4, label: 'peak-transmission' },
+      ]);
+      mockGetDeclineSignal.mockReturnValue('');
+
+      mockExecuteCitizenTurn.mockResolvedValueOnce(makeMockTurnOutput('cit-nolayer', 1));
+      mockBuildTurnPrompt.mockReturnValue('mock turn prompt');
+      mockBuildPeakTransmissionPrompt.mockReturnValue('peak prompt');
+
+      const tx = makeMockTransmission('cit-nolayer', 1, 'tx-nolayer');
+      mockExecutePeakTransmission.mockResolvedValueOnce({ transmission: tx, usage: { inputTokens: 50, outputTokens: 100 } });
+      mockMutateTransmission.mockResolvedValueOnce({ transmission: tx, wasMutated: false });
+      mockWriteTransmission.mockResolvedValue('/output/path.json');
+
+      // Gen 1, null recentLayer -- no INHERITANCE_RECENT_LABEL threshold should be added
+      await runGeneration(1, params, null, null);
+
+      // buildTurnPrompt receives just the seed problem (no recent layer content)
+      const seedArg = mockBuildTurnPrompt.mock.calls[0][0];
+      expect(seedArg).toBe('What is worth preserving?');
+    });
+
+    it('changing recentLayerThreshold from 0.25 to 0.50 delays recent layer delivery (INHR-03)', async () => {
+      vi.clearAllMocks();
+      mockStateManagerWrite.mockResolvedValue(undefined);
+
+      const params = makeMockParams({
+        generationSize: 1,
+        inheritanceStagingRates: { seedLayerAtBirth: true, recentLayerThreshold: 0.50 },
+      });
+      mockAssignRoles.mockReturnValue(['builder']);
+      const cit = makeMockCitizen({ id: 'cit-delayed', role: 'builder' });
+      mockBirthCitizen.mockReturnValueOnce(cit);
+
+      // Budget at 0.30 -- above default 0.25 but below the custom 0.50 threshold
+      mortalityState.budgetPercentage = 0.30;
+      mockCreateDeathThresholds.mockReturnValue([
+        { percentage: 0.4, label: 'peak-transmission' },
+      ]);
+      mockGetDeclineSignal.mockReturnValue('');
+
+      mockExecuteCitizenTurn.mockResolvedValueOnce(makeMockTurnOutput('cit-delayed', 1));
+      mockBuildTurnPrompt.mockReturnValue('mock turn prompt');
+      mockBuildPeakTransmissionPrompt.mockReturnValue('peak prompt');
+
+      const tx = makeMockTransmission('cit-delayed', 1, 'tx-delayed');
+      mockExecutePeakTransmission.mockResolvedValueOnce({ transmission: tx, usage: { inputTokens: 50, outputTokens: 100 } });
+      mockMutateTransmission.mockResolvedValueOnce({ transmission: tx, wasMutated: false });
+      mockWriteTransmission.mockResolvedValue('/output/path.json');
+
+      await runGeneration(2, params, 'seed', 'RECENT LAYER CONTENT');
+
+      // Budget 0.30 < recentLayerThreshold 0.50, so recent layer should NOT be in the prompt
+      const seedArg = mockBuildTurnPrompt.mock.calls[0][0];
+      expect(seedArg).not.toContain('RECENT LAYER CONTENT');
+    });
+  });
 
 // --- runSimulation tests ---
 
