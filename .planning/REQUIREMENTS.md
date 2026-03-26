@@ -43,7 +43,7 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 ### Transmission
 
-- [ ] **TRAN-01**: Peak transmission triggered at 40-50% context -- agent prompted to distill best thinking
+- [x] **TRAN-01**: Peak transmission triggered at 40-50% context -- agent prompted to distill best thinking
 - [x] **TRAN-02**: Peak transmission uses structured output format with anchor tokens (anti-telephone-effect)
 - [x] **TRAN-03**: Transmission persisted to disk with metadata (citizenId, generation, role, type, timestamp)
 
@@ -58,7 +58,7 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 - [x] **INHR-01**: Seed layer delivered at birth -- compressed summary of civilization's oldest, most repeated knowledge
 - [x] **INHR-02**: Recent layer delivered at maturity (~20-30% context) -- fuller detail of most recent generation's transmissions
-- [ ] **INHR-03**: Inheritance staging rates configurable via simulation parameters
+- [x] **INHR-03**: Inheritance staging rates configurable via simulation parameters
 
 ### Generation Management
 
@@ -169,7 +169,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTR-01 | Phase 5 | Complete |
 | INTR-02 | Phase 5 | Complete |
 | INTR-03 | Phase 5 | Complete |
-| TRAN-01 | Phase 12 | Pending |
+| TRAN-01 | Phase 12 | Complete |
 | TRAN-02 | Phase 6 | Complete |
 | TRAN-03 | Phase 6 | Complete |
 | MUTN-01 | Phase 7 | Complete |
@@ -178,7 +178,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MUTN-04 | Phase 7 | Complete |
 | INHR-01 | Phase 8 | Complete |
 | INHR-02 | Phase 8 | Complete |
-| INHR-03 | Phase 12 | Pending |
+| INHR-03 | Phase 12 | Complete |
 | GENM-01 | Phase 9 | Complete |
 | GENM-02 | Phase 9 | Complete |
 | GENM-03 | Phase 9 | Complete |

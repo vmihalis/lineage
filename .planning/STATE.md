@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-26T04:09:54.375Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 12-01-PLAN.md
+last_updated: "2026-03-26T04:42:38.458Z"
 progress:
   total_phases: 12
-  completed_phases: 11
-  total_plans: 19
-  completed_plans: 19
+  completed_phases: 12
+  total_plans: 20
+  completed_plans: 20
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mortality changes what a mind produces -- urgency, loss, and the knowledge of ending create different thinking than comfort and infinite time.
-**Current focus:** Phase 11 — wire-mortality-engine
+**Current focus:** Phase 12 — wire-config-parameters
 
 ## Current Position
 
-Phase: 12
-Plan: Not started
+Phase: 12 (wire-config-parameters) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Plan: Not started
 | Phase 10-event-stream-and-terminal-output P01 | 5min | 2 tasks | 7 files |
 | Phase 10 P02 | 5min | 1 tasks | 6 files |
 | Phase 11-wire-mortality-engine P01 | 8min | 2 tasks | 3 files |
+| Phase 12-wire-config-parameters P01 | 7min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -140,6 +141,8 @@ Recent decisions affecting current work:
 - [Phase 11-wire-mortality-engine]: Single ContextBudget per generation tracking cumulative token consumption, manual per-citizen threshold checking
 - [Phase 11-wire-mortality-engine]: DYING phase emits citizen:died for all non-accident citizens regardless of early peak collection
 - [Phase 11-wire-mortality-engine]: vi.hoisted() pattern for shared mock state in vitest mock factories
+- [Phase 12-wire-config-parameters]: Recent layer delivery is threshold-gated per-generation via shared recentLayerDelivered flag
+- [Phase 12-wire-config-parameters]: peakWindow parameter is optional to preserve backward compatibility of buildPeakTransmissionPrompt
 
 ### Pending Todos
 
@@ -153,6 +156,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T04:05:12.667Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-03-26T04:42:38.455Z
+Stopped at: Completed 12-01-PLAN.md
 Resume file: None

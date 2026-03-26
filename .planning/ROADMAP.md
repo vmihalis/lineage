@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 9: Generation Manager** - Full lifecycle orchestration as state machine across multiple generations
 - [x] **Phase 10: Event Stream and Terminal Output** - Real-time color-coded event stream and generation summaries for demo (completed 2026-03-26)
 - [x] **Phase 11: Wire Mortality Engine into Generation Runner** - Operationally activate ContextBudget, death thresholds, and decline signals in generation-runner (completed 2026-03-26)
-- [ ] **Phase 12: Wire Config Parameters to Runtime Call Sites** - Replace hardcoded values with config-driven peakTransmissionWindow and recentLayerThreshold
+- [x] **Phase 12: Wire Config Parameters to Runtime Call Sites** - Replace hardcoded values with config-driven peakTransmissionWindow and recentLayerThreshold (completed 2026-03-26)
 
 ## Phase Details
 
@@ -201,10 +201,10 @@ Plans:
   2. composeInheritance reads recentLayerThreshold from config and uses it to control recent layer delivery
   3. Changing peakTransmissionWindow or recentLayerThreshold in config produces observable runtime behavior change
 
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 12-01-PLAN.md -- Replace hardcoded values with config-driven parameters
+- [x] 12-01-PLAN.md -- Replace hardcoded values with config-driven parameters
 
 ## Progress
 
@@ -224,4 +224,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 9. Generation Manager | 0/2 | Planned    |  |
 | 10. Event Stream and Terminal Output | 1/2 | Complete    | 2026-03-26 |
 | 11. Wire Mortality Engine into Generation Runner | 1/1 | Complete    | 2026-03-26 |
-| 12. Wire Config Parameters to Runtime Call Sites | 0/1 | Planned | - |
+| 12. Wire Config Parameters to Runtime Call Sites | 1/1 | Complete   | 2026-03-26 |
