@@ -6,7 +6,7 @@
  * EVNT-01: Event type verification -- lineageBus accepts all required events
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   formatBirth,
   formatDeath,
@@ -25,6 +25,7 @@ import {
 } from './generation-summary.js';
 import type { GenerationDisplayState, DisplayCitizen } from './generation-summary.js';
 import { lineageBus } from '../events/index.js';
+import { EventRenderer } from './event-renderer.js';
 
 /**
  * Strip ANSI escape codes for content assertions.
@@ -240,5 +241,155 @@ describe('EVNT-01: Event type verification', () => {
     // Bonus: simulation lifecycle events
     expect(() => lineageBus.emit('simulation:started', 'seed', mockConfig as any)).not.toThrow();
     expect(() => lineageBus.emit('simulation:ended', 3)).not.toThrow();
+  });
+});
+
+describe('EventRenderer', () => {
+  let renderer: EventRenderer;
+
+  beforeEach(() => {
+    renderer = new EventRenderer();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    renderer.detach();
+    vi.restoreAllMocks();
+    lineageBus.removeAllListeners();
+  });
+
+  it('attach() subscribes to all required events', () => {
+    renderer.attach();
+    expect(lineageBus.listenerCount('citizen:born')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('citizen:died')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('citizen:peak-transmission')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('generation:started')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('generation:ended')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('transmission:mutated')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('inheritance:composed')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('simulation:started')).toBeGreaterThan(0);
+    expect(lineageBus.listenerCount('simulation:ended')).toBeGreaterThan(0);
+  });
+
+  it('detach() removes only display handlers', () => {
+    renderer.attach();
+    const countBefore = lineageBus.listenerCount('citizen:born');
+    renderer.detach();
+    expect(lineageBus.listenerCount('citizen:born')).toBe(countBefore - 1);
+  });
+
+  it('logs formatted output for citizen:born', () => {
+    renderer.attach();
+    lineageBus.emit('generation:started', 1, 3);
+    lineageBus.emit('citizen:born', 'citizen-abc12345', 'builder', 1);
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    const plain = stripAnsi(logCalls);
+    expect(plain).toContain('born');
+    expect(plain).toContain('builder');
+  });
+
+  it('logs formatted output for citizen:died', () => {
+    renderer.attach();
+    lineageBus.emit('generation:started', 1, 3);
+    lineageBus.emit('citizen:born', 'citizen-abc12345', 'builder', 1);
+    lineageBus.emit('citizen:died', 'citizen-abc12345', 'old-age', 1);
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    expect(logCalls).toContain('old-age');
+  });
+
+  it('logs formatted output for simulation:started', () => {
+    renderer.attach();
+    const mockConfig = {
+      seedProblem: 'What is wisdom?',
+      maxGenerations: 3,
+      generationSize: 5,
+      mutationRate: 0.3,
+      largeMutationProbability: 0.1,
+      deathProfileDistribution: { 'old-age': 0.7, accident: 0.3 },
+      roleDistribution: { builder: 0.2, skeptic: 0.2, archivist: 0.2, 'elder-interpreter': 0.2, observer: 0.2 },
+      gen1Protection: true,
+      peakTransmissionWindow: { min: 0.4, max: 0.5 },
+      outputDir: '/tmp/test',
+    };
+    lineageBus.emit('simulation:started', 'What is wisdom?', mockConfig as any);
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    const plain = stripAnsi(logCalls);
+    expect(plain).toContain('What is wisdom?');
+    expect(plain).toContain('LINEAGE');
+  });
+
+  it('logs formatted output for simulation:ended', () => {
+    renderer.attach();
+    lineageBus.emit('simulation:ended', 5);
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    const plain = stripAnsi(logCalls);
+    expect(plain).toContain('5 generations');
+    expect(plain).toContain('complete');
+  });
+
+  it('renders generation summary on generation:ended', () => {
+    renderer.attach();
+    lineageBus.emit('generation:started', 1, 2);
+    lineageBus.emit('citizen:born', 'citizen-aaa11111', 'builder', 1);
+    lineageBus.emit('citizen:born', 'citizen-bbb22222', 'skeptic', 1);
+    lineageBus.emit('citizen:died', 'citizen-aaa11111', 'old-age', 1);
+    lineageBus.emit('citizen:died', 'citizen-bbb22222', 'accident', 1);
+    lineageBus.emit('citizen:peak-transmission', 'citizen-aaa11111', 'tx-001');
+    lineageBus.emit('citizen:peak-transmission', 'citizen-bbb22222', 'tx-002');
+    lineageBus.emit('generation:ended', 1);
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    const plain = stripAnsi(logCalls);
+    expect(plain).toContain('builder');
+    expect(plain).toContain('skeptic');
+  });
+
+  it('accumulates mutation data across events for summary', () => {
+    renderer.attach();
+    lineageBus.emit('generation:started', 1, 1);
+    lineageBus.emit('citizen:born', 'citizen-ccc33333', 'archivist', 1);
+    lineageBus.emit('citizen:died', 'citizen-ccc33333', 'old-age', 1);
+    // transmission:mutated fires BEFORE citizen:peak-transmission per generation-runner
+    lineageBus.emit('transmission:mutated', 'tx-003', 'small');
+    lineageBus.emit('citizen:peak-transmission', 'citizen-ccc33333', 'tx-003');
+    lineageBus.emit('generation:ended', 1);
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    const plain = stripAnsi(logCalls);
+    expect(plain).toContain('small');
+  });
+
+  it('logs inheritance:composed events', () => {
+    renderer.attach();
+    lineageBus.emit('inheritance:composed', 2, 3);
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    const plain = stripAnsi(logCalls);
+    expect(plain).toContain('gen 2');
+    expect(plain).toContain('3 layers');
+  });
+
+  it('handles multiple generations by resetting state', () => {
+    renderer.attach();
+    // Generation 1
+    lineageBus.emit('generation:started', 1, 1);
+    lineageBus.emit('citizen:born', 'citizen-gen1-aaa', 'builder', 1);
+    lineageBus.emit('citizen:died', 'citizen-gen1-aaa', 'old-age', 1);
+    lineageBus.emit('citizen:peak-transmission', 'citizen-gen1-aaa', 'tx-g1');
+    lineageBus.emit('generation:ended', 1);
+
+    // Reset mock to isolate generation 2 assertions
+    vi.mocked(console.log).mockClear();
+
+    // Generation 2
+    lineageBus.emit('generation:started', 2, 1);
+    lineageBus.emit('citizen:born', 'citizen-gen2-bbb', 'skeptic', 2);
+    lineageBus.emit('citizen:died', 'citizen-gen2-bbb', 'accident', 2);
+    lineageBus.emit('citizen:peak-transmission', 'citizen-gen2-bbb', 'tx-g2');
+    lineageBus.emit('generation:ended', 2);
+
+    const logCalls = vi.mocked(console.log).mock.calls.flat().join(' ');
+    const plain = stripAnsi(logCalls);
+    expect(plain).toContain('skeptic');
+    expect(plain).toContain('Generation 2');
+    // Should NOT contain generation 1's citizen
+    expect(plain).not.toContain('citizen-gen1');
   });
 });

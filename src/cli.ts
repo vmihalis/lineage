@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { loadConfig } from './config/loader.js';
 import { runSimulation } from './generation/simulation-runner.js';
+import { EventRenderer } from './display/index.js';
 import type { SimulationParameters } from './schemas/simulation.js';
 
 export function createProgram(): Command {
@@ -31,13 +32,13 @@ export function createProgram(): Command {
         console.log(`  Mutation rate: ${config.mutationRate}`);
         console.log(`  Gen 1 protection: ${config.gen1Protection}`);
         console.log(`  Output: ${config.outputDir}`);
-        console.log('---');
-        console.log('Starting simulation...');
+
+        const renderer = new EventRenderer();
+        renderer.attach();
 
         const generations = await runSimulation(config);
 
-        console.log('---');
-        console.log(`Simulation complete. ${generations.length} generation(s) executed.`);
+        renderer.detach();
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         console.error(`Error: ${message}`);

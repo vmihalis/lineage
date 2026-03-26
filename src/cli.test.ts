@@ -1,10 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Command } from 'commander';
 
+// Hoisted mocks for vi.mock factories
+const { mockRunSimulation, MockEventRenderer } = vi.hoisted(() => ({
+  mockRunSimulation: vi.fn(),
+  MockEventRenderer: vi.fn(function (this: any) {
+    this.attach = vi.fn();
+    this.detach = vi.fn();
+  }),
+}));
+
 // Mock runSimulation to prevent Agent SDK calls in CLI tests
-const mockRunSimulation = vi.fn();
 vi.mock('./generation/simulation-runner.js', () => ({
   runSimulation: (...args: unknown[]) => mockRunSimulation(...args),
+}));
+
+// Mock EventRenderer to prevent ora/chalk terminal operations in CLI tests
+vi.mock('./display/index.js', () => ({
+  EventRenderer: MockEventRenderer,
 }));
 
 import { createProgram } from './cli.js';
@@ -119,11 +132,18 @@ describe('CLI action integration', () => {
 
     await program.parseAsync(['node', 'cli', 'What is consciousness?']);
 
-    // Verify console output confirms successful config loading and simulation
+    // Verify console output confirms successful config loading
     const logs = vi.mocked(console.log).mock.calls.map((c) => c[0]);
     expect(logs).toContain('LINEAGE - Simulation configured');
     expect(logs.some((l) => typeof l === 'string' && l.includes('What is consciousness?'))).toBe(true);
-    expect(logs.some((l) => typeof l === 'string' && l.includes('Simulation complete'))).toBe(true);
+  });
+
+  it('creates EventRenderer and wires it around simulation', async () => {
+    MockEventRenderer.mockClear();
+    const program = createProgram();
+    program.exitOverride();
+    await program.parseAsync(['node', 'cli', 'What is consciousness?']);
+    expect(MockEventRenderer).toHaveBeenCalledOnce();
   });
 
   it('passes --generations and --size to loadConfig', async () => {

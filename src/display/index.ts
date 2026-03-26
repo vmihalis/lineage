@@ -1,5 +1,5 @@
-// Display module -- pure event formatters and generation summary table builder.
-// No side effects. EventRenderer (Plan 02) will subscribe to events and call these.
+// Display module -- pure event formatters, generation summary table builder,
+// and EventRenderer (real-time event-to-terminal output).
 
 export {
   formatBirth, formatDeath, formatTransmission, formatMutation,
@@ -8,3 +8,4 @@ export {
 } from './formatters.js';
 export { buildGenerationSummary, createGenerationDisplayState } from './generation-summary.js';
 export type { GenerationDisplayState, DisplayCitizen } from './generation-summary.js';
+export { EventRenderer } from './event-renderer.js';
