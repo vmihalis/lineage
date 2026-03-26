@@ -19,10 +19,10 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 ### Agent Lifecycle
 
 - [x] **LIFE-01**: Citizen agent born with assigned role, generation number, and hidden death profile
-- [ ] **LIFE-02**: Context consumption tracked as percentage of max tokens (context-as-age proxy)
-- [ ] **LIFE-03**: ContextBudget abstraction with safety buffers accounting for SDK overhead (10-20% imprecision)
-- [ ] **LIFE-04**: Old age death profile -- context fills gradually, agent can observe decline, time for careful transmission
-- [ ] **LIFE-05**: Accident death profile -- random termination at unpredictable point, no warning, mid-sentence cut
+- [x] **LIFE-02**: Context consumption tracked as percentage of max tokens (context-as-age proxy)
+- [x] **LIFE-03**: ContextBudget abstraction with safety buffers accounting for SDK overhead (10-20% imprecision)
+- [x] **LIFE-04**: Old age death profile -- context fills gradually, agent can observe decline, time for careful transmission
+- [x] **LIFE-05**: Accident death profile -- random termination at unpredictable point, no warning, mid-sentence cut
 - [x] **LIFE-06**: Death profiles assigned hidden at birth via weighted random selection from configured distribution
 - [x] **LIFE-07**: Generation 1 protected from random death by default (configurable parameter)
 
@@ -154,10 +154,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUND-05 | Phase 2 | Complete |
 | FOUND-06 | Phase 2 | Complete |
 | LIFE-01 | Phase 3 | Complete |
-| LIFE-02 | Phase 11 | Pending |
-| LIFE-03 | Phase 11 | Pending |
-| LIFE-04 | Phase 11 | Pending |
-| LIFE-05 | Phase 11 | Pending |
+| LIFE-02 | Phase 11 | Complete |
+| LIFE-03 | Phase 11 | Complete |
+| LIFE-04 | Phase 11 | Complete |
+| LIFE-05 | Phase 11 | Complete |
 | LIFE-06 | Phase 3 | Complete |
 | LIFE-07 | Phase 3 | Complete |
 | ROLE-01 | Phase 4 | Complete |

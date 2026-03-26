@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: Inheritance Composer** - Staged knowledge delivery (seed at birth, recent at maturity) for next generation
 - [ ] **Phase 9: Generation Manager** - Full lifecycle orchestration as state machine across multiple generations
 - [x] **Phase 10: Event Stream and Terminal Output** - Real-time color-coded event stream and generation summaries for demo (completed 2026-03-26)
-- [ ] **Phase 11: Wire Mortality Engine into Generation Runner** - Operationally activate ContextBudget, death thresholds, and decline signals in generation-runner
+- [x] **Phase 11: Wire Mortality Engine into Generation Runner** - Operationally activate ContextBudget, death thresholds, and decline signals in generation-runner (completed 2026-03-26)
 - [ ] **Phase 12: Wire Config Parameters to Runtime Call Sites** - Replace hardcoded values with config-driven peakTransmissionWindow and recentLayerThreshold
 
 ## Phase Details
@@ -186,10 +186,10 @@ Plans:
   3. Old-age citizens receive decline signals via getDeclineSignal() injected into their conversation context
   4. Accident-profile citizens are terminated early when their threshold is reached, cutting output mid-thought
   5. All existing 346 tests continue to pass (no regressions)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 11-01-PLAN.md -- Wire ContextBudget, death thresholds, and decline signals into generation-runner
+- [x] 11-01-PLAN.md -- Wire ContextBudget, death thresholds, and decline signals into generation-runner
 
 ### Phase 12: Wire Config Parameters to Runtime Call Sites
 **Goal**: All config parameters declared in SimulationParametersSchema have runtime effect at their call sites
@@ -221,5 +221,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 8. Inheritance Composer | 0/2 | Planning complete | - |
 | 9. Generation Manager | 0/2 | Planned    |  |
 | 10. Event Stream and Terminal Output | 1/2 | Complete    | 2026-03-26 |
-| 11. Wire Mortality Engine into Generation Runner | 0/1 | Planning complete | - |
+| 11. Wire Mortality Engine into Generation Runner | 1/1 | Complete   | 2026-03-26 |
 | 12. Wire Config Parameters to Runtime Call Sites | 0/1 | Planned | - |

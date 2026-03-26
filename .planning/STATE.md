@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Milestone complete
-stopped_at: "Completed 10-02-PLAN.md Task 1 (checkpoint:human-verify pending)"
-last_updated: "2026-03-26T03:15:26.759Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-26T04:05:12.670Z"
 progress:
-  total_phases: 10
-  completed_phases: 10
-  total_plans: 18
-  completed_plans: 18
+  total_phases: 12
+  completed_phases: 11
+  total_plans: 19
+  completed_plans: 19
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mortality changes what a mind produces -- urgency, loss, and the knowledge of ending create different thinking than comfort and infinite time.
-**Current focus:** Phase 10 — event-stream-and-terminal-output
+**Current focus:** Phase 11 — wire-mortality-engine
 
 ## Current Position
 
-Phase: 10
-Plan: Not started
+Phase: 11 (wire-mortality-engine) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Plan: Not started
 | Phase 09-generation-manager P02 | 3min | 2 tasks | 6 files |
 | Phase 10-event-stream-and-terminal-output P01 | 5min | 2 tasks | 7 files |
 | Phase 10 P02 | 5min | 1 tasks | 6 files |
+| Phase 11-wire-mortality-engine P01 | 8min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,9 @@ Recent decisions affecting current work:
 - [Phase 10]: Bound handler Map for safe detach -- never removeAllListeners on shared bus
 - [Phase 10]: Spinner stop-before-log pattern prevents ora/console.log interleave
 - [Phase 10]: transmission:mutated cross-referenced in citizen:peak-transmission handler per generation-runner event order
+- [Phase 11-wire-mortality-engine]: Single ContextBudget per generation tracking cumulative token consumption, manual per-citizen threshold checking
+- [Phase 11-wire-mortality-engine]: DYING phase emits citizen:died for all non-accident citizens regardless of early peak collection
+- [Phase 11-wire-mortality-engine]: vi.hoisted() pattern for shared mock state in vitest mock factories
 
 ### Pending Todos
 
@@ -149,6 +153,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T03:05:24.872Z
-Stopped at: Completed 10-02-PLAN.md Task 1 (checkpoint:human-verify pending)
+Last session: 2026-03-26T04:05:12.667Z
+Stopped at: Completed 11-01-PLAN.md
 Resume file: None
