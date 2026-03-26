@@ -224,4 +224,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 9. Generation Manager | 0/2 | Planned    |  |
 | 10. Event Stream and Terminal Output | 1/2 | Complete    | 2026-03-26 |
 | 11. Wire Mortality Engine into Generation Runner | 1/1 | Complete    | 2026-03-26 |
-| 12. Wire Config Parameters to Runtime Call Sites | 1/1 | Complete   | 2026-03-26 |
+| 12. Wire Config Parameters to Runtime Call Sites | 1/1 | Complete    | 2026-03-26 |
