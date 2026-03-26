@@ -166,8 +166,12 @@ Plans:
   1. Typed events fire for all major lifecycle moments: citizen:born, citizen:died, citizen:peak-transmission, generation:started, generation:ended, transmission:mutated, inheritance:composed
   2. Terminal output is color-coded and streams in real-time (births, deaths, transmissions, mutations are visually distinguishable)
   3. A generation summary is displayed at each generation boundary showing who lived, who died, what was transmitted, and what mutated
-**Plans**: TBD
+**Plans:** 2 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 10-01-PLAN.md -- Install display deps, pure event formatters, generation summary builder, and unit tests
+- [ ] 10-02-PLAN.md -- EventRenderer class, CLI wiring, integration tests, and visual verification
 
 ## Progress
 
@@ -185,4 +189,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Mutation Pipeline | 1/2 | In Progress|  |
 | 8. Inheritance Composer | 0/2 | Planning complete | - |
 | 9. Generation Manager | 0/2 | Planned    |  |
-| 10. Event Stream and Terminal Output | 0/0 | Not started | - |
+| 10. Event Stream and Terminal Output | 0/2 | Planning complete | - |
