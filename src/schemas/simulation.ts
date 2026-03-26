@@ -20,5 +20,6 @@ export const SimulationParametersSchema = z.object({
     recentLayerThreshold: z.number().min(0).max(1).default(0.25),
   }).default({ seedLayerAtBirth: true, recentLayerThreshold: 0.25 }),
   outputDir: z.string().default('./output'),
+  contextWindow: z.number().int().positive().default(200_000),
 });
 export type SimulationParameters = z.infer<typeof SimulationParametersSchema>;
