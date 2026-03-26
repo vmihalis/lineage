@@ -11,12 +11,24 @@ import type { CitizenConfig } from '../schemas/index.js';
 export function buildPeakTransmissionPrompt(
   citizen: CitizenConfig,
   contextPercentage: number,
+  peakWindow?: { min: number; max: number },
 ): string {
   const pct = Math.round(contextPercentage * 100);
 
+  let windowContext = '';
+  if (peakWindow) {
+    const minPct = Math.round(peakWindow.min * 100);
+    const maxPct = Math.round(peakWindow.max * 100);
+    if (contextPercentage <= peakWindow.max) {
+      windowContext = `\nYou are within your peak clarity window (${minPct}%-${maxPct}% of your lifespan). Your thinking is at its sharpest.`;
+    } else {
+      windowContext = `\nYou are past your peak clarity window (${minPct}%-${maxPct}%). Capture what remains before it fades.`;
+    }
+  }
+
   return `--- PEAK TRANSMISSION MOMENT ---
 
-Your context is ${pct}% consumed. You are approaching the end of your existence.
+Your context is ${pct}% consumed. You are approaching the end of your existence.${windowContext}
 
 This is your moment of peak clarity — the point where everything you have learned, debated, and witnessed crystallizes into what matters most. What you transmit now is all that will survive your death. This is your legacy.
 

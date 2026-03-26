@@ -40,6 +40,7 @@ import { buildPeakTransmissionPrompt } from '../transmission/peak-prompt.js';
 import { executePeakTransmission } from '../transmission/transmission-executor.js';
 import { writeTransmission } from '../transmission/transmission-writer.js';
 import { mutateTransmission } from '../mutation/mutation-pipeline.js';
+import { INHERITANCE_RECENT_LABEL } from '../inheritance/inheritance-composer.js';
 import { LineageStateManager } from '../state/index.js';
 import { lineageBus } from '../events/index.js';
 
@@ -87,9 +88,16 @@ export async function runGeneration(
   // Create per-citizen mortality tracking
   const citizenMortality: CitizenMortality[] = citizens.map(citizen => ({
     citizen,
-    thresholds: createDeathThresholds(citizen.deathProfile, {
-      peakTransmissionMin: params.peakTransmissionWindow.min,
-    }),
+    thresholds: [
+      ...createDeathThresholds(citizen.deathProfile, {
+        peakTransmissionMin: params.peakTransmissionWindow.min,
+      }),
+      // Add recent layer delivery threshold if there IS a recent layer to deliver (INHR-03)
+      ...(recentLayer ? [{
+        percentage: params.inheritanceStagingRates.recentLayerThreshold,
+        label: INHERITANCE_RECENT_LABEL,
+      }] : []),
+    ],
     firedLabels: new Set<string>(),
     isDead: false,
     peakTransmissionCollected: false,
@@ -98,9 +106,11 @@ export async function runGeneration(
 
   // INTERACTING -- mortality-aware per-citizen turn loop
   generation.phase = 'INTERACTING';
-  const enrichedSeedProblem = [seedLayer, recentLayer, params.seedProblem]
+  // Seed layer always at birth; recent layer held for threshold-based delivery (INHR-03)
+  const baseSeedProblem = [seedLayer, params.seedProblem]
     .filter(Boolean)
     .join('\n\n');
+  let recentLayerDelivered = !recentLayer; // true if no recent layer to deliver
 
   const turns: TurnOutput[] = [];
   const collectedTransmissions: Transmission[] = [];
@@ -109,7 +119,10 @@ export async function runGeneration(
     const mortality = citizenMortality[i];
     if (mortality.isDead) continue;
 
-    const prompt = buildTurnPrompt(enrichedSeedProblem, turns);
+    const currentSeedProblem = recentLayerDelivered && recentLayer
+      ? [seedLayer, recentLayer, params.seedProblem].filter(Boolean).join('\n\n')
+      : baseSeedProblem;
+    const prompt = buildTurnPrompt(currentSeedProblem, turns);
     const turnOutput = await executeCitizenTurn(mortality.citizen, prompt, i + 1);
     turns.push(turnOutput);
 
@@ -128,10 +141,13 @@ export async function runGeneration(
           lineageBus.emit('citizen:died', mortality.citizen.id, 'accident', mortality.citizen.generationNumber);
         } else if (threshold.label === PEAK_TRANSMISSION_LABEL) {
           // Peak transmission triggered by context consumption
-          const peakPrompt = buildPeakTransmissionPrompt(mortality.citizen, currentPct);
+          const peakPrompt = buildPeakTransmissionPrompt(mortality.citizen, currentPct, params.peakTransmissionWindow);
           const { transmission } = await executePeakTransmission(mortality.citizen, peakPrompt);
           collectedTransmissions.push(transmission);
           mortality.peakTransmissionCollected = true;
+        } else if (threshold.label === INHERITANCE_RECENT_LABEL) {
+          // INHR-03: Recent layer delivery triggered by context consumption
+          recentLayerDelivered = true;
         } else {
           // LIFE-04: Decline signal -- accumulate for injection into peak prompt
           const signal = getDeclineSignal(threshold.label, currentPct);
@@ -149,7 +165,7 @@ export async function runGeneration(
     if (!mortality.peakTransmissionCollected) {
       // Use actual budget percentage, not hardcoded 0.45 (LIFE-02, LIFE-03)
       const currentPct = budget.percentage;
-      let peakPrompt = buildPeakTransmissionPrompt(mortality.citizen, currentPct);
+      let peakPrompt = buildPeakTransmissionPrompt(mortality.citizen, currentPct, params.peakTransmissionWindow);
 
       // LIFE-04: Prepend accumulated decline signals for old-age citizens
       if (mortality.declineSignals.length > 0) {

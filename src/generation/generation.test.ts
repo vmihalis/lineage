@@ -432,19 +432,25 @@ describe('runGeneration', () => {
 
   // Inheritance injection into prompts
   describe('inheritance injection into prompts', () => {
-    it('when seedLayer and recentLayer are provided, enriched seed problem prepends them to the original seedProblem', async () => {
+    it('when seedLayer and recentLayer are provided, first citizen gets seedLayer only (before threshold), second gets full enrichment (INHR-03)', async () => {
       const { params } = setupDefaultMocks();
 
       await runGeneration(2, params, 'ANCESTRAL KNOWLEDGE: preserved', 'INHERITANCE FROM GEN 1: recent');
 
-      // buildTurnPrompt receives enriched seed problem as first argument
-      const seedArg = mockBuildTurnPrompt.mock.calls[0][0];
-      expect(seedArg).toContain('ANCESTRAL KNOWLEDGE: preserved');
-      expect(seedArg).toContain('INHERITANCE FROM GEN 1: recent');
-      expect(seedArg).toContain('What is worth preserving?');
+      // First citizen: before recentLayerThreshold fires, only seedLayer + seedProblem
+      const firstSeedArg = mockBuildTurnPrompt.mock.calls[0][0];
+      expect(firstSeedArg).toContain('ANCESTRAL KNOWLEDGE: preserved');
+      expect(firstSeedArg).not.toContain('INHERITANCE FROM GEN 1: recent');
+      expect(firstSeedArg).toContain('What is worth preserving?');
+
+      // Second citizen: after threshold fires (0.45 >= 0.25), recent layer delivered
+      const secondSeedArg = mockBuildTurnPrompt.mock.calls[1][0];
+      expect(secondSeedArg).toContain('ANCESTRAL KNOWLEDGE: preserved');
+      expect(secondSeedArg).toContain('INHERITANCE FROM GEN 1: recent');
+      expect(secondSeedArg).toContain('What is worth preserving?');
     });
 
-    it('when both layers are null (gen 1), enrichedSeedProblem equals the original seedProblem', async () => {
+    it('when both layers are null (gen 1), baseSeedProblem equals the original seedProblem', async () => {
       const { params } = setupDefaultMocks();
 
       await runGeneration(1, params, null, null);
@@ -604,7 +610,7 @@ describe('runGeneration', () => {
 
       // No thresholds fired during INTERACTING (0.30 < 0.40)
       // In DYING, executePeakTransmission is called with actual budget percentage
-      expect(mockBuildPeakTransmissionPrompt).toHaveBeenCalledWith(cit, 0.30);
+      expect(mockBuildPeakTransmissionPrompt).toHaveBeenCalledWith(cit, 0.30, params.peakTransmissionWindow);
       // No decline signals at 0.30, so no prepending
       expect(mockExecutePeakTransmission).toHaveBeenCalledWith(cit, 'peak prompt for deep aged');
     });
@@ -835,8 +841,8 @@ describe('runGeneration', () => {
 
       await runGeneration(1, params, null, null);
 
-      // buildPeakTransmissionPrompt called with actual budget percentage 0.62
-      expect(mockBuildPeakTransmissionPrompt).toHaveBeenCalledWith(cit, 0.62);
+      // buildPeakTransmissionPrompt called with actual budget percentage 0.62 and peakTransmissionWindow
+      expect(mockBuildPeakTransmissionPrompt).toHaveBeenCalledWith(cit, 0.62, params.peakTransmissionWindow);
     });
   });
 });
@@ -1189,13 +1195,18 @@ describe('runSimulation', () => {
       );
       expect(gen1Calls[0][0]).toBe('What is worth preserving?');
 
-      // Gen 2: enriched seed problem should include inheritance layers
+      // Gen 2: first citizen gets seedLayer only (threshold not yet crossed),
+      // second citizen gets full enrichment after threshold fires (INHR-03)
       const gen2Calls = mockBuildTurnPrompt.mock.calls.filter(
         (_c: unknown[], idx: number) => idx >= 2,
       );
+      // First citizen of gen 2: seedLayer + seedProblem (no recent layer yet)
       expect(gen2Calls[0][0]).toContain('ANCESTRAL KNOWLEDGE: compressed');
-      expect(gen2Calls[0][0]).toContain('INHERITANCE FROM GENERATION 1: recent data');
-      expect(gen2Calls[0][0]).toContain('What is worth preserving?');
+      expect(gen2Calls[0][0]).not.toContain('INHERITANCE FROM GENERATION 1: recent data');
+      // Second citizen of gen 2: all layers after threshold fires
+      expect(gen2Calls[1][0]).toContain('ANCESTRAL KNOWLEDGE: compressed');
+      expect(gen2Calls[1][0]).toContain('INHERITANCE FROM GENERATION 1: recent data');
+      expect(gen2Calls[1][0]).toContain('What is worth preserving?');
     });
 
     it('generation 1 receives null seedLayer and null recentLayer from composeInheritance without error', async () => {
@@ -1244,12 +1255,16 @@ describe('runSimulation', () => {
       const result = await runSimulation(params);
 
       expect(result).toHaveLength(2);
-      // The gen 2 call should have the inheritance layers prepended
+      // Gen 2 second citizen gets inheritance layers after threshold fires (INHR-03)
       const gen2BuildTurnPromptCalls = mockBuildTurnPrompt.mock.calls.filter(
         (_c: unknown[], idx: number) => idx >= 2,
       );
+      // First citizen: seedLayer only (before threshold)
       expect(gen2BuildTurnPromptCalls[0][0]).toContain('ANCESTRAL KNOWLEDGE');
-      expect(gen2BuildTurnPromptCalls[0][0]).toContain('INHERITANCE FROM GEN 1');
+      expect(gen2BuildTurnPromptCalls[0][0]).not.toContain('INHERITANCE FROM GEN 1');
+      // Second citizen: all layers (after threshold fires)
+      expect(gen2BuildTurnPromptCalls[1][0]).toContain('ANCESTRAL KNOWLEDGE');
+      expect(gen2BuildTurnPromptCalls[1][0]).toContain('INHERITANCE FROM GEN 1');
     });
   });
 });
