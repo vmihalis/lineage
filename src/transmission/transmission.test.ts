@@ -189,6 +189,31 @@ describe('buildPeakTransmissionPrompt', () => {
     const prompt = buildPeakTransmissionPrompt(citizen, 0.876);
     expect(prompt).toContain('88%');
   });
+
+  // peakWindow parameter tests (TRAN-01)
+  it('without peakWindow parameter returns prompt without window context', () => {
+    const citizen = makeCitizen();
+    const prompt = buildPeakTransmissionPrompt(citizen, 0.45);
+    expect(prompt).not.toContain('peak clarity window');
+  });
+
+  it('with peakWindow where contextPercentage is within window includes "within" language', () => {
+    const citizen = makeCitizen();
+    const prompt = buildPeakTransmissionPrompt(citizen, 0.45, { min: 0.4, max: 0.5 });
+    expect(prompt).toContain('You are within your peak clarity window (40%-50%');
+  });
+
+  it('with peakWindow where contextPercentage exceeds max includes "past" language', () => {
+    const citizen = makeCitizen();
+    const prompt = buildPeakTransmissionPrompt(citizen, 0.65, { min: 0.4, max: 0.5 });
+    expect(prompt).toContain('You are past your peak clarity window (40%-50%');
+  });
+
+  it('with custom window values reflects those values in prompt', () => {
+    const citizen = makeCitizen();
+    const prompt = buildPeakTransmissionPrompt(citizen, 0.35, { min: 0.3, max: 0.7 });
+    expect(prompt).toContain('30%-70%');
+  });
 });
 
 // --- executePeakTransmission Tests (Plan 02) ---

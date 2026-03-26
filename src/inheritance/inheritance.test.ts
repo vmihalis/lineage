@@ -554,4 +554,13 @@ describe('composeInheritance', () => {
     expect(typeof result.composedAt).toBe('string');
     expect(new Date(result.composedAt).toISOString()).toBe(result.composedAt);
   });
+
+  it('accepts custom recentLayerThreshold in config without error (INHR-03)', async () => {
+    const result = await composeInheritance(1, '/output', { seedLayerAtBirth: true, recentLayerThreshold: 0.50 });
+
+    // Gen 1 early return -- just verify the function accepted the config
+    expect(result.targetGeneration).toBe(1);
+    expect(result.seedLayer).toBeNull();
+    expect(result.recentLayer).toBeNull();
+  });
 });
