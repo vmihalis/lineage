@@ -36,6 +36,7 @@ Mortality changes what a mind produces. The simulation must demonstrate that urg
 - [x] Generation manager orchestrating cohort lifecycle with state machine (INIT→BIRTHING→INTERACTING→DYING→TRANSMITTING→COMPLETE) — Validated in Phase 9: Generation Manager
 - [x] Real-time event stream output with color-coded terminal formatting — Validated in Phase 10: Event Stream and Terminal Output
 - [x] Generation summary table at each generation boundary — Validated in Phase 10: Event Stream and Terminal Output
+- [x] Mortality engine operationally wired into generation runner (ContextBudget tracks context, death thresholds checked per turn, decline signals injected, accident termination active) — Validated in Phase 11: Wire Mortality Engine
 
 ### Active
 
@@ -107,4 +108,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after Phase 10 completion — all 10 phases complete*
+*Last updated: 2026-03-25 after Phase 11 completion — mortality engine wired into generation runner*
