@@ -19,10 +19,10 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 ### Agent Lifecycle
 
 - [x] **LIFE-01**: Citizen agent born with assigned role, generation number, and hidden death profile
-- [x] **LIFE-02**: Context consumption tracked as percentage of max tokens (context-as-age proxy)
-- [x] **LIFE-03**: ContextBudget abstraction with safety buffers accounting for SDK overhead (10-20% imprecision)
-- [x] **LIFE-04**: Old age death profile -- context fills gradually, agent can observe decline, time for careful transmission
-- [x] **LIFE-05**: Accident death profile -- random termination at unpredictable point, no warning, mid-sentence cut
+- [ ] **LIFE-02**: Context consumption tracked as percentage of max tokens (context-as-age proxy)
+- [ ] **LIFE-03**: ContextBudget abstraction with safety buffers accounting for SDK overhead (10-20% imprecision)
+- [ ] **LIFE-04**: Old age death profile -- context fills gradually, agent can observe decline, time for careful transmission
+- [ ] **LIFE-05**: Accident death profile -- random termination at unpredictable point, no warning, mid-sentence cut
 - [x] **LIFE-06**: Death profiles assigned hidden at birth via weighted random selection from configured distribution
 - [x] **LIFE-07**: Generation 1 protected from random death by default (configurable parameter)
 
@@ -43,7 +43,7 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 ### Transmission
 
-- [x] **TRAN-01**: Peak transmission triggered at 40-50% context -- agent prompted to distill best thinking
+- [ ] **TRAN-01**: Peak transmission triggered at 40-50% context -- agent prompted to distill best thinking
 - [x] **TRAN-02**: Peak transmission uses structured output format with anchor tokens (anti-telephone-effect)
 - [x] **TRAN-03**: Transmission persisted to disk with metadata (citizenId, generation, role, type, timestamp)
 
@@ -58,7 +58,7 @@ Requirements for initial release (48-hour hackathon). Each maps to roadmap phase
 
 - [x] **INHR-01**: Seed layer delivered at birth -- compressed summary of civilization's oldest, most repeated knowledge
 - [x] **INHR-02**: Recent layer delivered at maturity (~20-30% context) -- fuller detail of most recent generation's transmissions
-- [x] **INHR-03**: Inheritance staging rates configurable via simulation parameters
+- [ ] **INHR-03**: Inheritance staging rates configurable via simulation parameters
 
 ### Generation Management
 
@@ -154,10 +154,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUND-05 | Phase 2 | Complete |
 | FOUND-06 | Phase 2 | Complete |
 | LIFE-01 | Phase 3 | Complete |
-| LIFE-02 | Phase 3 | Complete |
-| LIFE-03 | Phase 3 | Complete |
-| LIFE-04 | Phase 3 | Complete |
-| LIFE-05 | Phase 3 | Complete |
+| LIFE-02 | Phase 11 | Pending |
+| LIFE-03 | Phase 11 | Pending |
+| LIFE-04 | Phase 11 | Pending |
+| LIFE-05 | Phase 11 | Pending |
 | LIFE-06 | Phase 3 | Complete |
 | LIFE-07 | Phase 3 | Complete |
 | ROLE-01 | Phase 4 | Complete |
@@ -169,7 +169,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTR-01 | Phase 5 | Complete |
 | INTR-02 | Phase 5 | Complete |
 | INTR-03 | Phase 5 | Complete |
-| TRAN-01 | Phase 6 | Complete |
+| TRAN-01 | Phase 12 | Pending |
 | TRAN-02 | Phase 6 | Complete |
 | TRAN-03 | Phase 6 | Complete |
 | MUTN-01 | Phase 7 | Complete |
@@ -178,7 +178,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MUTN-04 | Phase 7 | Complete |
 | INHR-01 | Phase 8 | Complete |
 | INHR-02 | Phase 8 | Complete |
-| INHR-03 | Phase 8 | Complete |
+| INHR-03 | Phase 12 | Pending |
 | GENM-01 | Phase 9 | Complete |
 | GENM-02 | Phase 9 | Complete |
 | GENM-03 | Phase 9 | Complete |
@@ -195,6 +195,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 **Coverage:**
 - v1 requirements: 44 total
 - Mapped to phases: 44
+- Complete: 38
+- Pending (gap closure): 6 (LIFE-02, LIFE-03, LIFE-04, LIFE-05 → Phase 11; TRAN-01, INHR-03 → Phase 12)
 - Unmapped: 0
 
 ---

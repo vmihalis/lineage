@@ -22,6 +22,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: Inheritance Composer** - Staged knowledge delivery (seed at birth, recent at maturity) for next generation
 - [ ] **Phase 9: Generation Manager** - Full lifecycle orchestration as state machine across multiple generations
 - [x] **Phase 10: Event Stream and Terminal Output** - Real-time color-coded event stream and generation summaries for demo (completed 2026-03-26)
+- [ ] **Phase 11: Wire Mortality Engine into Generation Runner** - Operationally activate ContextBudget, death thresholds, and decline signals in generation-runner
+- [ ] **Phase 12: Wire Config Parameters to Runtime Call Sites** - Replace hardcoded values with config-driven peakTransmissionWindow and recentLayerThreshold
 
 ## Phase Details
 
@@ -173,6 +175,34 @@ Plans:
 - [x] 10-01-PLAN.md -- Install display deps, pure event formatters, generation summary builder, and unit tests
 - [ ] 10-02-PLAN.md -- EventRenderer class, CLI wiring, integration tests, and visual verification
 
+### Phase 11: Wire Mortality Engine into Generation Runner
+**Goal**: The mortality engine (ContextBudget, death thresholds, decline signals) is operationally active in generation-runner — citizens age through context consumption, receive decline signals, and die according to their death profile
+**Depends on**: Phase 3, Phase 9
+**Requirements**: LIFE-02, LIFE-03, LIFE-04, LIFE-05
+**Gap Closure:** Closes HIGH-severity integration gap from v1.0 audit (Phase 3 → Phase 9 unwired)
+**Success Criteria** (what must be TRUE):
+  1. ContextBudget is instantiated per citizen in generation-runner.ts and tracks context consumption during turns
+  2. Death thresholds are created via createDeathThresholds() based on each citizen's death profile at birth
+  3. Old-age citizens receive decline signals via getDeclineSignal() injected into their conversation context
+  4. Accident-profile citizens are terminated early when their threshold is reached, cutting output mid-thought
+  5. All existing 346 tests continue to pass (no regressions)
+
+Plans:
+- [ ] 11-01-PLAN.md -- Wire ContextBudget, death thresholds, and decline signals into generation-runner
+
+### Phase 12: Wire Config Parameters to Runtime Call Sites
+**Goal**: All config parameters declared in SimulationParametersSchema have runtime effect at their call sites
+**Depends on**: Phase 6, Phase 8, Phase 9
+**Requirements**: TRAN-01, INHR-03
+**Gap Closure:** Closes MEDIUM/LOW-severity integration gaps from v1.0 audit (config params ignored)
+**Success Criteria** (what must be TRUE):
+  1. generation-runner.ts reads params.peakTransmissionWindow instead of hardcoding 0.45
+  2. composeInheritance reads recentLayerThreshold from config and uses it to control recent layer delivery
+  3. Changing peakTransmissionWindow or recentLayerThreshold in config produces observable runtime behavior change
+
+Plans:
+- [ ] 12-01-PLAN.md -- Replace hardcoded values with config-driven parameters
+
 ## Progress
 
 **Execution Order:**
@@ -190,3 +220,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 8. Inheritance Composer | 0/2 | Planning complete | - |
 | 9. Generation Manager | 0/2 | Planned    |  |
 | 10. Event Stream and Terminal Output | 1/2 | Complete    | 2026-03-26 |
+| 11. Wire Mortality Engine into Generation Runner | 0/1 | Planned | - |
+| 12. Wire Config Parameters to Runtime Call Sites | 0/1 | Planned | - |
